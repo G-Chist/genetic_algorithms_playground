@@ -1,7 +1,6 @@
-# Import necessary libraries
 import random  # For generating random values
-import math  # For mathematical operations, specifically sine function
-import numpy as np  # For numerical operations like creating ranges and handling arrays
+import math  # For mathematical operations
+import numpy as np  # For numerical operations (arrays, range generation)
 import matplotlib.pyplot as plt  # For plotting graphs
 import matplotlib.animation as animation  # For creating animated visualizations
 
@@ -9,59 +8,47 @@ import matplotlib.animation as animation  # For creating animated visualizations
 # Define the polynomial function (cubic equation)
 def polynomial(a, b, c, d, x):
     """
-    This function defines the polynomial of the form: a*x^3 + b*x^2 + c*x + d
+    Computes the value of a cubic polynomial: a*x^3 + b*x^2 + c*x + d
+
     Parameters:
-    a, b, c, d: coefficients of the cubic equation
-    x: input variable
+    a, b, c, d: coefficients of the polynomial
+    x: input value
+
     Returns:
-    The value of the polynomial at x
+    The computed polynomial value at x
     """
     return a * (x ** 3) + b * (x * x) + c * x + d
 
 
-# Define the function that we want to approximate (sin(x) in this case)
-def func_to_approximate(x):
+# Define the fitness function to evaluate how well a polynomial approximates a target function
+def fitness_function(a, b, c, d, function_to_approximate, start=-2, end=2, step=0.05):
     """
-    This is the reference function we want to approximate using a cubic polynomial.
-    In this case, we are using the sine function.
-    Parameters:
-    x: input variable
-    Returns:
-    The sine of x
-    """
-    return math.sin(x)
-
-
-# Define the fitness function for genetic algorithm
-def fitness_function(a, b, c, d, start=-2, end=2, step=0.05):
-    """
-    The fitness function evaluates how well a given polynomial approximates the sine function.
-    It calculates the accumulated error between the polynomial and sine function over a range of x-values.
+    Calculates the fitness score of a polynomial by measuring its error in approximating
+    the target function over a specified range.
 
     Parameters:
-    a, b, c, d: coefficients of the polynomial
-    start, end: the range of x values to evaluate the error over
-    step: step size between consecutive x values
+    a, b, c, d: polynomial coefficients
+    function_to_approximate: the target function to approximate (e.g., math.sin)
+    start, end: range of x values over which to compare the function
+    step: step size for x values in the range
 
     Returns:
-    A fitness score, which is the inverse of the accumulated error (higher is better)
+    A fitness score (higher is better). The score is the inverse of the accumulated error.
     """
-    accumulated_error = 0
-    # Loop through x values in the given range with the specified step
-    for x in np.arange(start, end, step):
-        # Add the absolute difference between the polynomial and the sine function to the error
-        accumulated_error += abs(polynomial(a, b, c, d, x) - func_to_approximate(x))
-    # Return the inverse of the error as the fitness score (higher score is better)
-    return 1 / abs(accumulated_error)
+    accumulated_error = sum(
+        abs(polynomial(a, b, c, d, x) - function_to_approximate(x))
+        for x in np.arange(start, end, step)
+    )
+    return 1 / abs(accumulated_error)  # Lower error results in a higher fitness score
 
 
-# Function to generate a random individual (a random set of polynomial coefficients)
+# Function to generate a random individual (random polynomial coefficients)
 def generate_individual():
     """
-    Generates a random individual with random coefficients for the cubic polynomial.
+    Creates a random set of coefficients for a cubic polynomial.
 
     Returns:
-    A tuple with four random values representing the coefficients a, b, c, and d
+    A tuple (a, b, c, d) with random values.
     """
     return random.uniform(-5, 5), random.uniform(-5, 5), random.uniform(-5, 5), random.uniform(-0.1, 0.1)
 
@@ -69,165 +56,165 @@ def generate_individual():
 # Function to generate an initial population of random individuals
 def generate_population(size):
     """
-    Generates an initial population of individuals (polynomials).
+    Generates an initial population of individuals (random cubic polynomials).
 
     Parameters:
-    size: The number of individuals in the population
+    size: number of individuals in the population
 
     Returns:
-    A list of individuals (tuples of coefficients)
+    A list of individuals (tuples of coefficients).
     """
     return [generate_individual() for _ in range(size)]
 
 
-# Tournament selection function to choose parents for crossover
+# Tournament selection function for choosing parents
 def tournament_selection(population, fitness_scores, k=2):
     """
-    Selects a parent using tournament selection.
-    The best individual from a randomly selected subset of size `k` is chosen as the parent.
+    Selects a parent from the population using tournament selection.
 
     Parameters:
-    population: List of individuals in the current population
-    fitness_scores: List of fitness scores corresponding to the individuals
-    k: Size of the tournament (default is 2)
+    population: list of individuals
+    fitness_scores: list of fitness scores corresponding to individuals
+    k: number of randomly chosen individuals to compete in the tournament
 
     Returns:
-    The best individual chosen as the parent
+    The best individual among the selected competitors.
     """
-    # Randomly sample 'k' individuals along with their fitness scores
     selected = random.sample(list(zip(population, fitness_scores)), k)
-    # Return the individual with the highest fitness score
-    return max(selected, key=lambda x: x[1])[0]
+    return max(selected, key=lambda x: x[1])[0]  # Select individual with highest fitness
 
 
-# Function to perform crossover between two parents to produce two children
+# Function to perform crossover between two parent individuals
 def crossover(parent1, parent2):
     """
-    Perform a one-point crossover between two parents to generate two children.
+    Performs one-point crossover to generate two offspring.
 
     Parameters:
-    parent1, parent2: The two parent individuals (tuples of coefficients)
+    parent1, parent2: tuples representing two parent individuals
 
     Returns:
-    Two child individuals, each a combination of parent1 and parent2
+    Two new child individuals created by swapping parts of the parents.
     """
-    crossover_point = random.randint(1, 3)  # Randomly choose a crossover point between 1 and 3
-    child1 = parent1[:crossover_point] + parent2[crossover_point:]  # Combine parents to form child1
-    child2 = parent2[:crossover_point] + parent1[crossover_point:]  # Combine parents to form child2
-    return child1, child2
+    crossover_point = random.randint(1, 3)  # Choose a crossover index (1 to 3)
+    return (
+        parent1[:crossover_point] + parent2[crossover_point:],
+        parent2[:crossover_point] + parent1[crossover_point:]
+    )
 
 
-# Function to apply mutation to an individual (a set of polynomial coefficients)
-def mutate(individual, mutation_rate=0.15):
+# Function to apply mutation to an individual
+def mutate(individual, mutation_rate=0.35):
     """
-    Apply mutation to an individual. Mutation randomly adjusts one of the coefficients.
+    Mutates an individual by slightly modifying one of its coefficients.
 
     Parameters:
-    individual: The individual (a tuple of coefficients)
-    mutation_rate: The probability that a mutation will occur (default 0.15)
+    individual: tuple of polynomial coefficients
+    mutation_rate: probability of applying a mutation
 
     Returns:
-    The mutated individual (if mutation occurs) or the original individual (if no mutation occurs)
+    A mutated individual (or the same individual if no mutation occurs).
     """
-    if random.random() < mutation_rate:
-        index = random.randint(0, 3)  # Randomly choose which coefficient to mutate (a, b, c, or d)
-        mutated = list(individual)  # Convert the individual to a list to modify it
-        mutated[index] *= random.uniform(0.9, 1.1)  # Adjust the chosen coefficient by a random factor
-        return tuple(mutated)  # Return the mutated individual
-    return individual  # If no mutation occurs, return the original individual
+    if random.random() < mutation_rate:  # Apply mutation with given probability
+        index = random.randint(0, 3)  # Choose a random coefficient to mutate
+        mutated = list(individual)
+        mutated[index] *= random.uniform(0.8, 1.2)  # Apply a small random change
+        return tuple(mutated)
+    return individual  # Return original if no mutation occurs
 
 
-# Pre-generate the evolution of polynomials over generations (genetic algorithm loop)
-def generate_evolution(population_size, max_generations, step_frequency=20):
+# Genetic algorithm to evolve a polynomial approximation
+def generate_evolution(population_size, max_generations, function_to_approximate, step_frequency=20):
     """
-    Run the genetic algorithm to evolve the population of polynomials towards better approximations of sin(x).
+    Evolves a population of polynomials to approximate a given function using a genetic algorithm.
 
     Parameters:
-    population_size: The number of individuals in the population
-    max_generations: The number of generations to evolve the population
-    step_frequency: How often to store the best solution for animation purposes
+    population_size: number of individuals in the population
+    max_generations: number of generations to evolve
+    function_to_approximate: the function being approximated (e.g., math.sin)
+    step_frequency: how often to store the best solution for visualization
 
     Returns:
-    A list of the best individuals at each step of evolution
+    A list of the best individuals at different points in evolution.
     """
-    population = generate_population(population_size)  # Initialize the population
-    evolution = []  # List to store the best individual at each step
+    population = generate_population(population_size)  # Generate initial population
+    evolution = []  # Store best individuals at specific intervals
 
-    # Loop through each generation
     for generation in range(max_generations):
-        # Evaluate the fitness of all individuals in the population
-        fitness_scores = [fitness_function(*ind) for ind in population]
-        best_individual = population[fitness_scores.index(max(fitness_scores))]  # Get the best individual
+        # Compute fitness scores for all individuals
+        fitness_scores = [fitness_function(*ind, function_to_approximate) for ind in population]
+        # Use *ind to unpack tuple
 
-        # Store the best individual every `step_frequency` generations
+        # Identify the best individual in the population
+        best_individual = population[fitness_scores.index(max(fitness_scores))]
+
+        # Store the best individual at specified intervals for animation
         if generation % step_frequency == 0:
             evolution.append(best_individual)
 
-        # Generate the next generation
-        next_generation = []  # List to store the next generation of individuals
+        # Generate next generation through selection, crossover, and mutation
+        next_generation = []
         while len(next_generation) < population_size:
-            # Select two parents using tournament selection
             parent1 = tournament_selection(population, fitness_scores)
             parent2 = tournament_selection(population, fitness_scores)
-            # Perform crossover to create two children
             child1, child2 = crossover(parent1, parent2)
-            # Mutate the children and add them to the next generation
             next_generation.append(mutate(child1))
             if len(next_generation) < population_size:
                 next_generation.append(mutate(child2))
 
-        # Update the population for the next generation
-        population = next_generation
+        population = next_generation  # Update population
 
-    return evolution  # Return the list of best individuals over the generations
-
-
-# Run the genetic algorithm to generate the evolution of polynomials
-population_size = 50  # Set population size
-max_generations = 1000  # Set the number of generations to run the algorithm
-evolution = generate_evolution(population_size, max_generations, step_frequency=20)
-
-# Set up the figure for plotting the animation
-fig, ax = plt.subplots()  # Create a figure and axis for plotting
-x_values = np.linspace(-5, 5, 500)  # Create an array of x values from -5 to 5
-y_sin = np.sin(x_values)  # Compute the reference sine function values
-line, = ax.plot(x_values, np.zeros_like(x_values), label="Evolving Polynomial", color="red")  # Initialize the plot
-
-# Configure the plot appearance
-ax.plot(x_values, y_sin, label="sin(x)", color="blue")  # Plot the reference sine function
-ax.set_xlim(-5, 5)  # Set x-axis limits
-ax.set_ylim(-1.5, 1.5)  # Set y-axis limits
-ax.axhline(0, color='black', linewidth=0.5)  # Add horizontal axis line
-ax.axvline(0, color='black', linewidth=0.5)  # Add vertical axis line
-ax.grid(True, linestyle='--', alpha=0.6)  # Enable grid with dashed lines
-ax.legend()  # Show the legend
-ax.set_title("Evolution of Polynomial Approximation of sin(x)")  # Set the plot title
+    return evolution  # Return the stored best individuals over time
 
 
-# Function to update the plot during animation
-def update(frame):
+# Function to animate the polynomial evolution
+def animate_polynomial_approximation(function_to_approximate, population_size=50, max_generations=1000):
     """
-    Update the plot for each frame of the animation.
+    Runs the genetic algorithm and animates the evolution of polynomial approximations.
 
     Parameters:
-    frame: The current frame index in the animation
+    function_to_approximate: the target function (e.g., math.sin)
+    population_size: number of individuals in the population
+    max_generations: total number of generations
+
     Returns:
-    The updated line object with the new polynomial curve
+    Animated visualization of the evolution process.
     """
-    best_individual = evolution[frame]  # Get the best individual for the current frame
-    y_poly = best_individual[0] * x_values ** 3 + best_individual[1] * x_values ** 2 + best_individual[2] * x_values + \
-             best_individual[3]  # Calculate the polynomial values for the x values
-    line.set_ydata(y_poly)  # Update the y-data of the plot with the new polynomial values
-    return line,  # Return the updated line object
+    # Run the genetic algorithm
+    evolution = generate_evolution(population_size, max_generations, function_to_approximate, step_frequency=20)
+
+    # Set up the plot
+    fig, ax = plt.subplots()
+    x_values = np.linspace(-5, 5, 500)
+    y_function = np.vectorize(function_to_approximate)(x_values)
+    line, = ax.plot(x_values, np.zeros_like(x_values), label="Evolving Polynomial", color="red")
+
+    # Configure plot aesthetics
+    ax.plot(x_values, y_function, label=function_to_approximate.__name__, color="blue")
+    ax.set_xlim(-5, 5)
+    ax.set_ylim(-1.5, 1.5)
+    ax.axhline(0, color='black', linewidth=0.5)
+    ax.axvline(0, color='black', linewidth=0.5)
+    ax.grid(True, linestyle='--', alpha=0.6)
+    ax.legend()
+    ax.set_title(f"Evolution of Polynomial Approximation of {function_to_approximate.__name__}")
+
+    # Define the update function for animation
+    def update(frame):
+        """Updates the plot with the current best polynomial."""
+        best_individual = evolution[frame]
+        y_poly = polynomial(*best_individual, x_values)
+        line.set_ydata(y_poly)
+        return line,
+
+    # Create animation
+    ani = animation.FuncAnimation(fig, update, frames=len(evolution), interval=50, repeat=False)
+
+    # Save the animation as a GIF (optional)
+    ani.save(f'polynomial_approximation_{function_to_approximate.__name__}.gif', writer='imagemagick', fps=30)
+
+    # Show the animation
+    plt.show()
 
 
-# Create animation with a time step for each update
-time_step = 50  # Control the speed of the animation by adjusting the time step
-ani = animation.FuncAnimation(fig, update, frames=len(evolution), interval=time_step,
-                              repeat=False)  # Create the animation
-
-# Save the animation as a GIF using ImageMagick
-ani.save('polynomial_approximation.gif', writer='imagemagick', fps=30)  # Save the animation as a GIF file
-
-# Show the animation
-plt.show()  # Display the animation in a window
+# Run the algorithm to approximate sin(x)
+animate_polynomial_approximation(math.sin)

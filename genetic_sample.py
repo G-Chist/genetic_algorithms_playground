@@ -216,5 +216,9 @@ def animate_polynomial_approximation(function_to_approximate, population_size=50
     plt.show()
 
 
-# Run the algorithm to approximate sin(x)
-animate_polynomial_approximation(math.sin)
+def x_square(x):
+    return x*x
+
+
+# Run the algorithm to approximate x^2
+animate_polynomial_approximation(x_square)

@@ -63,7 +63,7 @@ def generate_individual():
     Returns:
     A tuple with four random values representing the coefficients a, b, c, and d
     """
-    return random.uniform(-5, 5), random.uniform(-5, 5), random.uniform(-5, 5), random.uniform(-5, 5)
+    return random.uniform(-5, 5), random.uniform(-5, 5), random.uniform(-5, 5), random.uniform(-0.1, 0.1)
 
 
 # Function to generate an initial population of random individuals

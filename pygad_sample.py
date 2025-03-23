@@ -1,84 +1,101 @@
-import pygad
-import numpy as np
-import matplotlib.pyplot as plt
+# Import necessary libraries
+import pygad  # PyGAD is used for genetic algorithm functionality
+import numpy as np  # Numpy is used for numerical operations and array manipulations
+import matplotlib.pyplot as plt  # Matplotlib is used for plotting results
 
 
-# The sine function we want to match
+# Define the target function (sin(x)) we want to approximate
 def target_function(x):
-    return np.sin(x)
+    return np.sin(x)  # The target function is sin(x)
 
 
-# Polynomial function of the form ax^3 + bx^2 + cx + d
+# Define the polynomial function (ax^3 + bx^2 + cx + d)
 def polynomial_function(x, coefficients):
+    # Extract polynomial coefficients
     a, b, c, d = coefficients
+    # Return the value of the polynomial for given x
     return a * (x ** 3) + b * (x ** 2) + c * x + d
 
 
-# Fitness function to evaluate how well the polynomial matches sin(x)
+# Fitness function evaluates how well the polynomial approximates sin(x)
 def fitness_func(ga_instance, solution, solution_idx):
-    # We will evaluate the fitness over the range of x from 0 to 2*pi
-    x_values = np.linspace(-np.pi, np.pi, 100)  # Generate 100 values of x from -pi to pi
-    target_values = target_function(x_values)  # Actual sin(x) values
-    predicted_values = polynomial_function(x_values, solution)  # Polynomial values
+    # Generate a range of x values from -pi to pi
+    x_values = np.linspace(-np.pi, np.pi, 100)  # Generate points
+    target_values = target_function(x_values)  # Get the actual sin(x) values
+    predicted_values = polynomial_function(x_values, solution)  # Get the predicted values from the polynomial
 
-    # Compute the squared error between the polynomial and the target function (sin(x))
-    error = np.sum((predicted_values - target_values) ** 2)  # Squared error is commonly used for regression tasks
-    fitness = 1.0 / (1.0 + error)  # We return the inverse of error, so the fitness is higher when error is smaller
-    return fitness
+    # Compute the squared error between predicted and target sin(x) values
+    error = np.sum((predicted_values - target_values) ** 2)  # Squared error is used to quantify the difference
+    # Fitness is the inverse of error: lower error = better fitness
+    fitness = 1.0 / (1.0 + error)  # Higher fitness corresponds to a better solution
+    return fitness  # Return fitness value for the solution
 
 
-# Genetic algorithm parameters
-num_generations = 1000
-num_parents_mating = 4
-sol_per_pop = 8
-num_genes = 4  # a, b, c, d are the 4 coefficients of the polynomial
-init_range_low = -5  # Coefficients can range from -5 to 5
-init_range_high = 5
+# Set parameters for the genetic algorithm
+num_generations = 1000  # The number of generations the GA will run
+num_parents_mating = 4  # The number of parents selected for mating
+sol_per_pop = 8  # Number of solutions in each population
+num_genes = 4  # Number of genes (coefficients) for the polynomial
+init_range_low = -5  # The lower bound for polynomial coefficients
+init_range_high = 5  # The upper bound for polynomial coefficients
 
-# Define the parent selection, crossover, and mutation methods
-parent_selection_type = "sss"
-keep_parents = 1
-crossover_type = "single_point"
-mutation_type = "random"
-mutation_percent_genes = 10
+# Set the types of parent selection, crossover, and mutation methods
+parent_selection_type = "sss"  # "sss" stands for Steady State Selection (a parent selection method)
+"""In every generation few chromosomes are selected (good - with high fitness) for creating a new offspring.
+Then some (bad - with low fitness) chromosomes are removed and the new offspring is placed in their place.
+The rest of population survives to new generation.
+"""
+keep_parents = 1  # Number of parents to keep from one generation to the next
+crossover_type = "single_point"  # Single-point crossover method is used to combine parent solutions
+mutation_type = "random"  # Random mutation method will be used to introduce variation
+mutation_percent_genes = 10  # Percentage of genes that will undergo mutation in each generation
 
-# Initialize the genetic algorithm instance
-ga_instance = pygad.GA(num_generations=num_generations,
-                       num_parents_mating=num_parents_mating,
-                       fitness_func=fitness_func,
-                       sol_per_pop=sol_per_pop,
-                       num_genes=num_genes,
-                       init_range_low=init_range_low,
-                       init_range_high=init_range_high,
-                       parent_selection_type=parent_selection_type,
-                       keep_parents=keep_parents,
-                       crossover_type=crossover_type,
-                       mutation_type=mutation_type,
-                       mutation_percent_genes=mutation_percent_genes)
+# Initialize the genetic algorithm instance with all the parameters
+ga_instance = pygad.GA(
+    num_generations=num_generations,  # Set number of generations
+    num_parents_mating=num_parents_mating,  # Set number of parents mating
+    fitness_func=fitness_func,  # Assign the fitness function
+    sol_per_pop=sol_per_pop,  # Set the number of solutions per population
+    num_genes=num_genes,  # Set the number of genes (polynomial coefficients)
+    init_range_low=init_range_low,  # Set the lower limit for gene initialization
+    init_range_high=init_range_high,  # Set the upper limit for gene initialization
+    parent_selection_type=parent_selection_type,  # Parent selection method
+    keep_parents=keep_parents,  # Number of parents to keep in the next generation
+    crossover_type=crossover_type,  # Crossover method
+    mutation_type=mutation_type,  # Mutation method
+    mutation_percent_genes=mutation_percent_genes  # Percentage of genes to mutate
+)
 
 # Run the genetic algorithm
-ga_instance.run()
+ga_instance.run()  # The GA runs for the specified number of generations
 
-# Get the best solution found by the GA
-solution, solution_fitness, solution_idx = ga_instance.best_solution()
+# Get the best solution found by the GA after all generations
+solution, solution_fitness, solution_idx = ga_instance.best_solution()  # Retrieve the best solution
 
-# Print out the best solution (the coefficients of the polynomial)
-print("Best polynomial coefficients: a = {0}, b = {1}, c = {2}, d = {3}".format(solution[0], solution[1], solution[2],
-                                                                                solution[3]))
-print("Fitness value of the best solution = {0}".format(solution_fitness))
+# Print the best solution's polynomial coefficients and fitness value
+print("Best polynomial coefficients: a = {0}, b = {1}, c = {2}, d = {3}".format(
+    solution[0], solution[1], solution[2], solution[3]))  # Print coefficients for the polynomial
+print("Fitness value of the best solution = {0}".format(solution_fitness))  # Print fitness value
 
-# Test the polynomial with the best coefficients and compare to sin(x)
-x_values = np.linspace(-2* np.pi, 2 * np.pi, 100)
+# Generate x values for plotting the polynomial and sin(x)
+x_values = np.linspace(-3 * np.pi, 3 * np.pi, 100)  # Generate values of x
+# Get the predicted polynomial values for these x values using the best solution
 predicted_values = polynomial_function(x_values, solution)
+# Get the target sin(x) values for the same x values
 target_values = target_function(x_values)
 
-# Plot the results
-plt.xlim(-5, 5)
-plt.ylim(-1.5, 1.5)
+# Plot the actual sin(x) values (target function) and the predicted polynomial values
+plt.xlim(-10, 10)  # Limit x-axis
+plt.ylim(-3*np.pi, 3*np.pi)  # Limit y-axis
+# Plot sin(x) in blue
 plt.plot(x_values, target_values, label='sin(x)', color='blue')
+# Plot the polynomial in red with a dashed line
 plt.plot(x_values, predicted_values, label='Polynomial', color='red', linestyle='dashed')
+# Add legend to the plot
 plt.legend()
+# Add a title and labels to the plot
 plt.title('Polynomial vs. sin(x)')
 plt.xlabel('x')
 plt.ylabel('y')
+# Show the plot
 plt.show()

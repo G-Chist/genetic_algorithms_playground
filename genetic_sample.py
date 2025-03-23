@@ -21,7 +21,7 @@ def polynomial(a, b, c, d, x):
 
 
 # Define the fitness function to evaluate how well a polynomial approximates a target function
-def fitness_function(a, b, c, d, function_to_approximate, start=-2, end=2, step=0.05):
+def fitness_function(a, b, c, d, function_to_approximate, start=-1, end=1, step=0.05):
     """
     Calculates the fitness score of a polynomial by measuring its error in approximating
     the target function over a specified range.
@@ -167,7 +167,7 @@ def generate_evolution(population_size, max_generations, function_to_approximate
 
 
 # Function to animate the polynomial evolution
-def animate_polynomial_approximation(function_to_approximate, population_size=50, max_generations=1000):
+def animate_polynomial_approximation(function_to_approximate, population_size=50, max_generations=2000):
     """
     Runs the genetic algorithm and animates the evolution of polynomial approximations.
 

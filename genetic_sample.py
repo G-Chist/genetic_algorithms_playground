@@ -220,5 +220,5 @@ def x_square(x):
     return x*x
 
 
-# Run the algorithm to approximate x^2
-animate_polynomial_approximation(x_square)
+# Run the algorithm to approximate e^x
+animate_polynomial_approximation(math.exp)

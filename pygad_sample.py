@@ -34,7 +34,7 @@ def fitness_func(ga_instance, solution, solution_idx):
 # Set parameters for the genetic algorithm
 num_generations = 1000  # The number of generations the GA will run
 num_parents_mating = 4  # The number of parents selected for mating
-sol_per_pop = 8  # Number of solutions in each population
+sol_per_pop = 20  # Number of solutions in each population
 num_genes = 4  # Number of genes (coefficients) for the polynomial
 init_range_low = -5  # The lower bound for polynomial coefficients
 init_range_high = 5  # The upper bound for polynomial coefficients
@@ -78,24 +78,38 @@ print("Best polynomial coefficients: a = {0}, b = {1}, c = {2}, d = {3}".format(
 print("Fitness value of the best solution = {0}".format(solution_fitness))  # Print fitness value
 
 # Generate x values for plotting the polynomial and sin(x)
-x_values = np.linspace(-3 * np.pi, 3 * np.pi, 100)  # Generate values of x
+x_values = np.linspace(-2 * np.pi, 2 * np.pi, 100)  # Generate values of x
 # Get the predicted polynomial values for these x values using the best solution
 predicted_values = polynomial_function(x_values, solution)
 # Get the target sin(x) values for the same x values
 target_values = target_function(x_values)
 
 # Plot the actual sin(x) values (target function) and the predicted polynomial values
-plt.xlim(-10, 10)  # Limit x-axis
-plt.ylim(-3*np.pi, 3*np.pi)  # Limit y-axis
+fig, ax = plt.subplots()  # Create a figure and axes object
+
 # Plot sin(x) in blue
-plt.plot(x_values, target_values, label='sin(x)', color='blue')
+ax.plot(x_values, target_values, label='sin(x)', color='blue')
+
 # Plot the polynomial in red with a dashed line
-plt.plot(x_values, predicted_values, label='Polynomial', color='red', linestyle='dashed')
+ax.plot(x_values, predicted_values, label='Polynomial', color='red', linestyle='dashed')
+
+ax.set_xlim(-10, 10)  # Limit x-axis
+ax.set_ylim(-10, 10)  # Limit y-axis
+
 # Add legend to the plot
-plt.legend()
+ax.legend()
+
 # Add a title and labels to the plot
-plt.title('Polynomial vs. sin(x)')
-plt.xlabel('x')
-plt.ylabel('y')
+ax.set_title('Polynomial vs. sin(x)')
+ax.set_xlabel('x')
+ax.set_ylabel('y')
+
+# Enforce equal scaling of both axes
+ax.axis('equal')
+
+# Add axis arrows using ax.arrow
+ax.arrow(-20, 0, 40, 0, head_width=0.5, head_length=1, fc='black', ec='black')
+ax.arrow(0, -20, 0, 40, head_width=0.5, head_length=1, fc='black', ec='black')
+
 # Show the plot
 plt.show()

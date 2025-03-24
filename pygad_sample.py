@@ -45,7 +45,7 @@ parent_selection_type = "sss"  # "sss" stands for Steady State Selection (a pare
 Then some (bad - with low fitness) chromosomes are removed and the new offspring is placed in their place.
 The rest of population survives to new generation.
 """
-keep_parents = 1  # Number of parents to keep from one generation to the next
+keep_parents = 2  # Number of parents to keep from one generation to the next
 crossover_type = "single_point"  # Single-point crossover method is used to combine parent solutions
 mutation_type = "random"  # Random mutation method will be used to introduce variation
 mutation_percent_genes = 10  # Percentage of genes that will undergo mutation in each generation

@@ -19,8 +19,8 @@ def polynomial_function(x, coefficients):
 def fitness_func(ga_instance, solution, solution_idx):
     accumulated_error = 0  # Store accumulated error
     for point in points:  # Go through all defined points
-        # Add abs(target y - predicted y) to error
-        accumulated_error += abs(point[1] - polynomial_function(point[0], solution))
+        # Add target y - predicted y to error
+        accumulated_error += abs(point[1] - polynomial_function(point[0], solution))**2
     fitness = 1 / (1.0 + accumulated_error)
     return fitness  # Return fitness value for the solution
 
@@ -42,7 +42,7 @@ The rest of population survives to new generation.
 keep_parents = 2  # Number of parents to keep from one generation to the next
 crossover_type = "single_point"  # Single-point crossover method is used to combine parent solutions
 mutation_type = "random"  # Random mutation method will be used to introduce variation
-mutation_percent_genes = 10  # Percentage of genes that will undergo mutation in each generation
+mutation_percent_genes = 30  # Percentage of genes that will undergo mutation in each generation
 
 # Initialize the genetic algorithm instance with all the parameters
 ga_instance = pygad.GA(

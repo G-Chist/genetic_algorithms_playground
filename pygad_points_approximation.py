@@ -4,7 +4,7 @@ import numpy as np  # Numpy is used for numerical operations and array manipulat
 import matplotlib.pyplot as plt  # Matplotlib is used for plotting results
 
 # Define target points
-points = [(0, 1), (1, 2), (-1, 2)]
+points = [(0, 1.05), (1, 1.95), (-1, 0.05), (2, 3.05), (3, 3.95), (-2, -1)]
 
 
 # Define the polynomial function (ax^3 + bx^2 + cx + d)
@@ -19,7 +19,8 @@ def polynomial_function(x, coefficients):
 def fitness_func(ga_instance, solution, solution_idx):
     accumulated_error = 0  # Store accumulated error
     for point in points:  # Go through all defined points
-        accumulated_error += abs(point[1] - polynomial_function(point[0], solution))  # Add abs(target y - predicted y) to error
+        # Add abs(target y - predicted y) to error
+        accumulated_error += abs(point[1] - polynomial_function(point[0], solution))
     fitness = 1 / (1.0 + accumulated_error)
     return fitness  # Return fitness value for the solution
 
@@ -71,7 +72,7 @@ print("Best polynomial coefficients: a = {0}, b = {1}, c = {2}, d = {3}".format(
 print("Fitness value of the best solution = {0}".format(solution_fitness))  # Print fitness value
 
 # Generate x values for plotting the polynomial and sin(x)
-x_values = np.linspace(-3, 3, 100)  # Generate values of x
+x_values = np.linspace(-15, 15, 100)  # Generate values of x
 # Get the predicted polynomial values for these x values using the best solution
 predicted_values = polynomial_function(x_values, solution)
 
@@ -86,8 +87,8 @@ plt.scatter(x_points, y_points, color='blue', label='Data Points')
 # Plot the polynomial in red with a dashed line
 ax.plot(x_values, predicted_values, label='Polynomial', color='red', linestyle='dashed')
 
-ax.set_xlim(-3, 3)  # Limit x-axis
-ax.set_ylim(-3, 3)  # Limit y-axis
+ax.set_xlim(-15, 15)  # Limit x-axis
+ax.set_ylim(-15, 15)  # Limit y-axis
 
 # Add legend to the plot
 ax.legend()
@@ -98,7 +99,7 @@ ax.set_xlabel('x')
 ax.set_ylabel('y')
 
 # Enforce equal scaling of both axes
-ax.axis('equal')
+# ax.axis('equal')
 
 # Add axis arrows using ax.arrow
 ax.arrow(-20, 0, 40, 0, head_width=0.5, head_length=1, fc='black', ec='black')

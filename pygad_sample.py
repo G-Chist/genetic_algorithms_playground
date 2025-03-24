@@ -78,7 +78,7 @@ print("Best polynomial coefficients: a = {0}, b = {1}, c = {2}, d = {3}".format(
 print("Fitness value of the best solution = {0}".format(solution_fitness))  # Print fitness value
 
 # Generate x values for plotting the polynomial and sin(x)
-x_values = np.linspace(-2 * np.pi, 2 * np.pi, 100)  # Generate values of x
+x_values = np.linspace(-3 * np.pi, 3 * np.pi, 100)  # Generate values of x
 # Get the predicted polynomial values for these x values using the best solution
 predicted_values = polynomial_function(x_values, solution)
 # Get the target sin(x) values for the same x values
@@ -105,7 +105,7 @@ ax.set_xlabel('x')
 ax.set_ylabel('y')
 
 # Enforce equal scaling of both axes
-ax.axis('equal')
+# ax.axis('equal')
 
 # Add axis arrows using ax.arrow
 ax.arrow(-20, 0, 40, 0, head_width=0.5, head_length=1, fc='black', ec='black')

@@ -4,7 +4,7 @@ import numpy as np  # Numpy is used for numerical operations and array manipulat
 import matplotlib.pyplot as plt  # Matplotlib is used for plotting results
 
 # Define target points
-points = [(0, 1.05), (1, 1.95), (-1, 0.05), (2, 3.05), (3, 3.95), (-2, -1)]
+points = [(1, 1), (2, -2), (3, 4)]
 
 
 # Define the polynomial function (ax^3 + bx^2 + cx + d)

@@ -36,7 +36,7 @@ def fitness_function(a, b, c, d, function_to_approximate, start=-1, end=1, step=
     A fitness score (higher is better). The score is the inverse of the accumulated error.
     """
     accumulated_error = sum(
-        abs(polynomial(a, b, c, d, x) - function_to_approximate(x))
+        abs(polynomial(a, b, c, d, x) - function_to_approximate(x))**2
         for x in np.arange(start, end, step)
     )
     return 1 / abs(accumulated_error)  # Lower error results in a higher fitness score
@@ -220,5 +220,5 @@ def x_square(x):
     return x*x
 
 
-# Run the algorithm to approximate e^x
-animate_polynomial_approximation(math.exp)
+# Run the algorithm to approximate given function
+animate_polynomial_approximation(math.sin)

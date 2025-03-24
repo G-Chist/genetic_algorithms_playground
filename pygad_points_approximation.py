@@ -19,7 +19,7 @@ def polynomial_function(x, coefficients):
 def fitness_func(ga_instance, solution, solution_idx):
     accumulated_error = 0  # Store accumulated error
     for point in points:  # Go through all defined points
-        # Add target y - predicted y to error
+        # Add square of target y - predicted y to error
         accumulated_error += abs(point[1] - polynomial_function(point[0], solution))**2
     fitness = 1 / (1.0 + accumulated_error)
     return fitness  # Return fitness value for the solution

@@ -17,12 +17,14 @@ def polynomial_function(x, coefficients):
     # Return the value of the polynomial for given x
     return a * (x ** 3) + b * (x ** 2) + c * x + d
 
+
 # Define the 2nd derivative of (ax^3 + bx^2 + cx + d)
 def polynomial_2nd_derivative(x, coefficients):
     # Extract polynomial coefficients
     a, b, c, d = coefficients
     # Return the value of the 2nd derivative for given x
     return 6*a*x + 2*b
+
 
 # Fitness function evaluates how well the polynomial approximates sin(x)
 # We will also enforce smoothness by returning fitness = 0 for large (> too_rough) derivatives

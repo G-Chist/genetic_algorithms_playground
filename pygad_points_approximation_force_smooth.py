@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt  # Matplotlib is used for plotting results
 # Define target points
 points = [(1, 1), (2, -2), (3, 4), (0, 7)]
 
+# Define a derivative value for the polynomial we will consider too large
+too_rough = 15
+
 
 # Define the polynomial function (ax^3 + bx^2 + cx + d)
 def polynomial_function(x, coefficients):
@@ -14,13 +17,22 @@ def polynomial_function(x, coefficients):
     # Return the value of the polynomial for given x
     return a * (x ** 3) + b * (x ** 2) + c * x + d
 
+# Define the derivative of (ax^3 + bx^2 + cx + d) = (3ax^2 + 2bx + c)
+def polynomial_derivative(x, coefficients):
+    # Extract polynomial coefficients
+    a, b, c, d = coefficients
+    # Return the value of the derivative for given x
+    return 3 * a * (x**2) + 2 * b * x + c
 
 # Fitness function evaluates how well the polynomial approximates sin(x)
+# We will also enforce smoothness by returning fitness = 0 for large (> too_rough) derivatives
 def fitness_func(ga_instance, solution, solution_idx):
     accumulated_error = 0  # Store accumulated error
     for point in points:  # Go through all defined points
         # Add square of target y - predicted y to error
         accumulated_error += abs(point[1] - polynomial_function(point[0], solution))**2
+        if abs(polynomial_derivative(point[0], solution)) > too_rough:
+            return 0
     fitness = 1 / (1.0 + accumulated_error)
     return fitness  # Return fitness value for the solution
 
@@ -94,7 +106,7 @@ ax.set_ylim(-15, 15)  # Limit y-axis
 ax.legend()
 
 # Add a title and labels to the plot
-ax.set_title('Polynomial vs. points')
+ax.set_title('Smooth polynomial vs. points')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 

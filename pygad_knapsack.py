@@ -20,6 +20,11 @@ def fitness_func(ga_instance, solution, solution_idx):
     return total_value if total_weight <= W else 0  # Return value if within weight limit, otherwise 0
 
 
+def weight(solution):
+    total_weight = sum(items[i][1] for i in range(N) if solution[i] > 0.5)  # Calculate total weight
+    return total_weight
+
+
 # List of items, where each item is represented as a tuple (value, weight)
 items = [
     (random.randint(1, 10), random.randint(1, 10)) for i in range(N)
@@ -69,3 +74,5 @@ solution, solution_fitness, solution_idx = ga_instance.best_solution()  # Retrie
 print("Best solution:")
 print([clamp(i) for i in solution])  # Convert solution to array of bits
 print(f"Best solution fitness: {solution_fitness}")
+
+print(f"Total weight of items picked: {weight(solution)} / {W}")

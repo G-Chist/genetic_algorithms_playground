@@ -1,4 +1,4 @@
-import random  # Import the random module for generating random numbers
+import random
 
 # ======================== PROBLEM PARAMETERS ========================
 N = 100  # Number of available items

@@ -12,7 +12,7 @@ items = [
 # ======================== GENETIC ALGORITHM PARAMETERS ========================
 POP_SIZE = 100  # Number of solutions (chromosomes) per generation
 MUTATION_RATE = 0.1  # Probability of mutation occurring in an offspring
-GENERATIONS = 5000  # Total number of generations to evolve
+GENERATIONS = 500  # Total number of generations to evolve
 
 # ======================== FUNCTION DEFINITIONS ========================
 

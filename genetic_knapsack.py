@@ -10,7 +10,7 @@ items = [
 ]
 
 # ======================== GENETIC ALGORITHM PARAMETERS ========================
-POP_SIZE = 10  # Number of solutions (chromosomes) per generation
+POP_SIZE = 100  # Number of solutions (chromosomes) per generation
 MUTATION_RATE = 0.1  # Probability of mutation occurring in an offspring
 GENERATIONS = 5000  # Total number of generations to evolve
 
@@ -84,3 +84,8 @@ print("Best Solution:", best_solution)  # Print the best chromosome (binary repr
 print("Best Value Achieved:", best_value)  # Print the maximum value obtained within weight constraints
 print("Items selected: ", best_solution.count(1), "/", str(N))  # Print out the selected item count
 
+counter = 0
+for value, weight in items:
+    counter += 1
+    if best_solution[counter-1] == 1:
+        print(f"Item {counter}: value = {value}, weight = {weight}")  # Print out selected items

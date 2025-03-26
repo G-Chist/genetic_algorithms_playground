@@ -16,6 +16,7 @@ GENERATIONS = 5000  # Total number of generations to evolve
 
 # ======================== FUNCTION DEFINITIONS ========================
 
+
 # Function to generate a random binary solution (chromosome)
 # Each gene in the chromosome represents whether an item is included (1) or not (0)
 def random_solution():

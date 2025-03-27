@@ -2,15 +2,16 @@ import pygad
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 # ======================== PROBLEM PARAMETERS ========================
-N = 100  # Number of available items (days)
-restart_cost = 100  # Cost to restart the plant after it being shut down
+N = 200  # Number of available items (days)
+restart_cost = 300  # Cost to restart the plant after it being shut down
 prod_per_day = 100  # Revenue from a running day (smallest possible time frame)
 
 # List of electricity prices (randomized for testing)
 random.seed(42)
-prices = [random.randint(30, 600) for _ in range(N)]
+prices = [120 + 80*math.sin(i/10) + random.randint(-30, 30) for i in range(N)]  # Fuzzy sine wave
 
 
 # ======================== FITNESS FUNCTION ========================
@@ -50,11 +51,11 @@ def binary_mutation(offspring, ga_instance):
 # ======================== GA PARAMETERS ========================
 num_generations = 1000
 num_parents_mating = 16
-sol_per_pop = 100
+sol_per_pop = 200
 num_genes = N
 
 # Strictly binary initial population
-initial_population = np.random.choice([0, 1], size=(sol_per_pop, num_genes)).astype(int)
+initial_population = np.random.choice([1, 1], size=(sol_per_pop, num_genes)).astype(int)  # Initialize all ones
 
 ga_instance = pygad.GA(
     num_generations=num_generations,
@@ -62,7 +63,7 @@ ga_instance = pygad.GA(
     fitness_func=lambda ga, sol, idx: fitness_func(ga, sol, idx),  # Fitness function only returns revenue
     sol_per_pop=sol_per_pop,
     num_genes=num_genes,
-    parent_selection_type="sss",
+    parent_selection_type="random",
     keep_parents=2,
     crossover_type="single_point",
     mutation_type=binary_mutation,  # Use custom mutation

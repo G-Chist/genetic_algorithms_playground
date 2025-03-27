@@ -10,7 +10,7 @@ prod_per_day = 100  # Revenue from a running day (smallest possible time frame)
 
 # List of electricity prices (randomized for testing)
 random.seed(42)
-prices = [random.randint(9, 200) for _ in range(N)]
+prices = [random.randint(30, 600) for _ in range(N)]
 
 
 # ======================== FITNESS FUNCTION ========================
@@ -40,8 +40,8 @@ def fitness_func(ga_instance, solution, solution_idx, return_revenue_curve=False
 
 # ======================== CUSTOM MUTATION FUNCTION ========================
 def binary_mutation(offspring, ga_instance):
-    """Bit-flip mutation (flips 10% of bits in each offspring)."""
-    mutation_indices = np.random.choice(len(offspring), size=int(len(offspring) * 0.1), replace=False)
+    """Bit-flip mutation (flips bits in each offspring)."""
+    mutation_indices = np.random.choice(len(offspring), size=int(len(offspring) * 0.6), replace=False)
     for i in mutation_indices:
         offspring[i] = 1 - offspring[i]  # Flip bit (0 ↔ 1)
     return offspring

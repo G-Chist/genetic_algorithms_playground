@@ -52,13 +52,10 @@ def binary_mutation(offspring, ga_instance):
     - A mutated version of the offspring with flipped bits.
     """
 
-    # Determine the number of genes to mutate (10% of total genes)
-    mutation_indices = np.random.choice(len(offspring), size=int(len(offspring) * 0.1), replace=False)
-
-    # Flip the selected genes (0 -> 1, 1 -> 0)
-    for i in mutation_indices:
-        offspring[i] = 1 - offspring[i]  # Invert the bit (0 becomes 1, 1 becomes 0)
-
+    for i in range(len(offspring)):  # Loop over each offspring
+        mutation_indices = np.random.choice(len(offspring[i]), size=int(len(offspring[i]) * 0.1), replace=False)
+        for idx in mutation_indices:
+            offspring[i, idx] = 1 - offspring[i, idx]  # Flip bit (0 -> 1, 1 -> 0)
     return offspring
 
 

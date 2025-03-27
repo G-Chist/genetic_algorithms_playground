@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 # ======================== PROBLEM PARAMETERS ========================
 N = 100  # Number of available items (days)
-restart_cost = 10000  # Cost to restart the plant after it being shut down
+restart_cost = 100  # Cost to restart the plant after it being shut down
 prod_per_day = 100  # Revenue from a running day (smallest possible time frame)
 
 # List of electricity prices (randomized for testing)
@@ -79,6 +79,15 @@ binary_solution = np.round(solution).astype(int)  # Convert to strictly binary v
 # Compute revenue over time for best solution
 _, revenue_over_time = fitness_func(ga_instance, binary_solution, solution_idx, return_revenue_curve=True)
 
+# Print solution and fitness
+print("Best solution:")
+print("[" + "".join("█" if binary_solution[idx] else " " for idx in range(N)) + "]")
+print(f"Best solution fitness: {solution_fitness}")
+
+# Compare with a full-time operation scenario
+non_stop_fitness, _ = fitness_func(ga_instance, np.ones(N), solution_idx, return_revenue_curve=True)
+print(f"Fitness of non-stop solution: {non_stop_fitness}")
+
 # ======================== PLOTTING ========================
 fig, ax = plt.subplots(2, 1, figsize=(12, 8), sharex=True)
 
@@ -91,21 +100,16 @@ ax[0].legend()
 ax[0].grid()
 
 # Plot 2: Revenue Accumulation
-ax[1].plot(revenue_over_time, label="Cumulative Revenue ($)", color="red", linewidth=2)
+ax[1].plot(revenue_over_time, label="Cumulative Revenue (Best Solution)", color="red", linewidth=2)
+# Compute non-stop solution revenue over time
+non_stop_solution = np.ones(N)  # Plant runs all the time
+_, non_stop_revenue_over_time = fitness_func(ga_instance, non_stop_solution, solution_idx, return_revenue_curve=True)
+ax[1].plot(non_stop_revenue_over_time, label="Cumulative Revenue (Non-Stop Solution)", color="blue", linestyle="--", linewidth=2)
 ax[1].set_xlabel("Day")
 ax[1].set_ylabel("Revenue ($)")
-ax[1].set_title("Revenue Over Time for Best Solution")
+ax[1].set_title("Revenue Over Time for Best Solution vs Non-Stop Solution")
 ax[1].legend()
 ax[1].grid()
 
 plt.tight_layout()
 plt.show()
-
-# Print solution and fitness
-print("Best solution:")
-print("[" + "".join("█" if binary_solution[idx] else " " for idx in range(N)) + "]")
-print(f"Best solution fitness: {solution_fitness}")
-
-# Compare with a full-time operation scenario
-non_stop_fitness, _ = fitness_func(ga_instance, np.ones(N), solution_idx, return_revenue_curve=True)
-print(f"Fitness of non-stop solution: {non_stop_fitness}")

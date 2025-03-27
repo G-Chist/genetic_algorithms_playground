@@ -33,7 +33,7 @@ def weight(solution):
 
 # ======================== GA PARAMETERS ========================
 num_generations = 500
-num_parents_mating = 4
+num_parents_mating = 8
 sol_per_pop = 100
 num_genes = N
 

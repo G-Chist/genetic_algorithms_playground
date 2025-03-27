@@ -70,6 +70,12 @@ solution, solution_fitness, solution_idx = ga_instance.best_solution()
 binary_solution = np.round(solution).astype(int)  # Convert to strictly binary values
 
 print("Best solution:")
-print(binary_solution.tolist())  # Convert NumPy array to list for readability
+print("[", end="")
+for idx in range(N):
+    if round(solution[idx]) == 1:
+        print("█", end="")
+    else:
+        print(" ", end="")
+print("]")
 print(f"Best solution fitness: {solution_fitness}")
 print(f"Total weight of items picked: {weight(solution)} / {W}")

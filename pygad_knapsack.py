@@ -18,8 +18,8 @@ def fitness_func(ga_instance, solution, solution_idx):
 
     If the total weight exceeds W, the solution is considered invalid and gets a fitness score of 0.
     """
-    total_value = sum(items[i][0] for i in range(N) if solution[i] == 1)  # Sum values of selected items
-    total_weight = sum(items[i][1] for i in range(N) if solution[i] == 1)  # Sum weights of selected items
+    total_value = sum(items[i][0] for i in range(N) if round(solution[i]) == 1)  # Sum values of selected items
+    total_weight = sum(items[i][1] for i in range(N) if round(solution[i]) == 1)  # Sum weights of selected items
 
     return total_value if total_weight <= W else 0  # Penalize overweight solutions
 
@@ -30,7 +30,7 @@ def weight(solution):
     Computes the total weight of the selected items in the solution.
     This function helps validate the feasibility of the best solution.
     """
-    return sum(items[i][1] for i in range(N) if solution[i] == 1)
+    return sum(items[i][1] for i in range(N) if round(solution[i]) == 1)
 
 
 # ======================== CUSTOM BINARY MUTATION FUNCTION ========================
@@ -52,8 +52,8 @@ def binary_mutation(offspring, ga_instance):
     - A mutated version of the offspring with flipped bits.
     """
 
-    # Determine the number of genes to mutate (30% of total genes)
-    mutation_indices = np.random.choice(len(offspring), size=int(len(offspring) * 0.3), replace=False)
+    # Determine the number of genes to mutate (10% of total genes)
+    mutation_indices = np.random.choice(len(offspring), size=int(len(offspring) * 0.1), replace=False)
 
     # Flip the selected genes (0 -> 1, 1 -> 0)
     for i in mutation_indices:
@@ -63,9 +63,9 @@ def binary_mutation(offspring, ga_instance):
 
 
 # ======================== GA PARAMETERS ========================
-num_generations = 1000
+num_generations = 500
 num_parents_mating = 4
-sol_per_pop = 20
+sol_per_pop = 100
 num_genes = N
 
 # Initialize population with strictly binary values (0s and 1s)
@@ -81,7 +81,7 @@ ga_instance = pygad.GA(
     keep_parents=2,  # Number of parents carried to the next generation
     crossover_type="single_point",  # Single-point crossover for genetic mixing
     mutation_type=binary_mutation,  # Use our custom binary mutation function
-    mutation_percent_genes=30,  # Mutate 30% of the genes in each offspring
+    mutation_percent_genes=10,  # Mutate 10% of the genes in each offspring
     initial_population=initial_population  # Ensure population starts as binary
 )
 

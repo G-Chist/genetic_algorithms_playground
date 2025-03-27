@@ -8,7 +8,7 @@ restart_cost = 1000  # Cost to restart the plant after it being shut down
 prod_per_day = 1000  # Revenue from day of running (smallest possible time frame)
 
 # List of electricity prices
-prices = [random.uniform(30, 60) for _ in range(N)]
+prices = [random.uniform(300, 600) for _ in range(N)]
 
 
 # ======================== FITNESS FUNCTION ========================
@@ -70,3 +70,4 @@ for idx in range(N):
         print(" ", end="")
 print("]")
 print(f"Best solution fitness: {solution_fitness}")
+print(f"Fitness of non-stop solution: {fitness_func(ga_instance, [1 for idx in range(N)], solution_idx)}")

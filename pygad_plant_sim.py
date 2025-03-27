@@ -51,7 +51,7 @@ def binary_mutation(offspring, ga_instance):
 # ======================== GA PARAMETERS ========================
 num_generations = 1000
 num_parents_mating = 16
-sol_per_pop = 200
+sol_per_pop = 100
 num_genes = N
 
 # Strictly binary initial population
@@ -65,7 +65,7 @@ ga_instance = pygad.GA(
     num_genes=num_genes,
     parent_selection_type="random",
     keep_parents=2,
-    crossover_type="single_point",
+    crossover_type="two_points",
     mutation_type=binary_mutation,  # Use custom mutation
     initial_population=initial_population
 )

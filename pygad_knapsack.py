@@ -1,78 +1,68 @@
 import pygad
 import random
-
-
-# Function to turn value into binary
-def clamp(value):
-    if value > 0.5:
-        return 1
-    return 0
+import numpy as np
 
 
 # ======================== PROBLEM PARAMETERS ========================
 N = 100  # Number of available items
 W = 300  # Maximum weight capacity of the knapsack
 
-
-def fitness_func(ga_instance, solution, solution_idx):
-    total_value = sum(items[i][0] for i in range(N) if solution[i] > 0.5)  # Calculate total value
-    total_weight = sum(items[i][1] for i in range(N) if solution[i] > 0.5)  # Calculate total weight
-    return total_value if total_weight <= W else 0  # Return value if within weight limit, otherwise 0
-
-
-def weight(solution):
-    total_weight = sum(items[i][1] for i in range(N) if solution[i] > 0.5)  # Calculate total weight
-    return total_weight
-
-
 # List of items, where each item is represented as a tuple (value, weight)
-items = [
-    (random.randint(1, 10), random.randint(1, 10)) for i in range(N)
-]
+items = [(random.randint(1, 10), random.randint(1, 10)) for _ in range(N)]
 
-# Set parameters for the genetic algorithm
-num_generations = 1000  # The number of generations the GA will run
-num_parents_mating = 4  # The number of parents selected for mating
-sol_per_pop = 20  # Number of solutions in each population
-num_genes = N  # Number of genes
-init_range_low = 0  # The lower limit for each gene
-init_range_high = 1  # The upper limit for each gene
 
-# Set the types of parent selection, crossover, and mutation methods
-parent_selection_type = "sss"  # "sss" stands for Steady State Selection (a parent selection method)
-"""In every generation few chromosomes are selected (good - with high fitness) for creating a new offspring.
-Then some (bad - with low fitness) chromosomes are removed and the new offspring is placed in their place.
-The rest of population survives to new generation.
-"""
-keep_parents = 2  # Number of parents to keep from one generation to the next
-crossover_type = "single_point"  # Single-point crossover method is used to combine parent solutions
-mutation_type = "random"  # Random mutation method will be used to introduce variation
-mutation_percent_genes = 30  # Percentage of genes that will undergo mutation in each generation
+# ======================== FITNESS FUNCTION ========================
+def fitness_func(ga_instance, solution, solution_idx):
+    total_value = sum(items[i][0] for i in range(N) if solution[i] == 1)  # Use strict binary values
+    total_weight = sum(items[i][1] for i in range(N) if solution[i] == 1)
 
-# Initialize the genetic algorithm instance with all the parameters
+    return total_value if total_weight <= W else 0  # Penalize overweight solutions
+
+
+# ======================== WEIGHT FUNCTION ========================
+def weight(solution):
+    return sum(items[i][1] for i in range(N) if solution[i] == 1)
+
+
+# ======================== BINARY CONSTRAINT FIXES ========================
+def binary_mutation(offspring, ga_instance):
+    """ Custom mutation function that flips 0s to 1s and vice versa. """
+    mutation_indices = np.random.choice(len(offspring), size=int(len(offspring) * 0.3), replace=False)
+    for i in mutation_indices:
+        offspring[i] = 1 - offspring[i]  # Flip the bit
+    return offspring
+
+
+# ======================== GA PARAMETERS ========================
+num_generations = 1000
+num_parents_mating = 4
+sol_per_pop = 20
+num_genes = N
+
+# Initialize population with strictly binary values (0s and 1s)
+initial_population = np.random.choice([0, 1], size=(sol_per_pop, num_genes))
+
 ga_instance = pygad.GA(
-    num_generations=num_generations,  # Set number of generations
-    num_parents_mating=num_parents_mating,  # Set number of parents mating
-    fitness_func=fitness_func,  # Assign the fitness function
-    sol_per_pop=sol_per_pop,  # Set the number of solutions per population
-    num_genes=num_genes,  # Set the number of genes (polynomial coefficients)
-    init_range_low=init_range_low,  # Set the lower limit for gene initialization
-    init_range_high=init_range_high,  # Set the upper limit for gene initialization
-    parent_selection_type=parent_selection_type,  # Parent selection method
-    keep_parents=keep_parents,  # Number of parents to keep in the next generation
-    crossover_type=crossover_type,  # Crossover method
-    mutation_type=mutation_type,  # Mutation method
-    mutation_percent_genes=mutation_percent_genes  # Percentage of genes to mutate
+    num_generations=num_generations,
+    num_parents_mating=num_parents_mating,
+    fitness_func=fitness_func,
+    sol_per_pop=sol_per_pop,
+    num_genes=num_genes,
+    parent_selection_type="sss",
+    keep_parents=2,
+    crossover_type="single_point",
+    mutation_type=binary_mutation,  # Use custom mutation function
+    mutation_percent_genes=30,
+    initial_population=initial_population  # Enforce binary initialization
 )
 
-# Run the genetic algorithm
-ga_instance.run()  # The GA runs for the specified number of generations
+# ======================== RUN GA ========================
+ga_instance.run()
 
-# Get the best solution found by the GA after all generations
-solution, solution_fitness, solution_idx = ga_instance.best_solution()  # Retrieve the best solution
+# ======================== OUTPUT RESULTS ========================
+solution, solution_fitness, solution_idx = ga_instance.best_solution()
 
 print("Best solution:")
-print([clamp(i) for i in solution])  # Convert solution to array of bits
+print(solution.tolist())  # Output strictly 0/1 values
 print(f"Best solution fitness: {solution_fitness}")
-
 print(f"Total weight of items picked: {weight(solution)} / {W}")

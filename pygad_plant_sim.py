@@ -11,7 +11,8 @@ prod_per_day = 100  # Revenue from a running day (smallest possible time frame)
 
 # List of electricity prices (randomized for testing)
 random.seed(42)
-prices = [100 + 40*math.sin(i/60) + random.randint(-20, 20) for i in range(N)]  # Fuzzy sine wave
+# Fuzzy sine wave
+prices = [100 + random.uniform(38, 42)*math.sin((i/60)*random.uniform(1, 2)) + random.randint(-5, 5) for i in range(N)]
 # prices = [0 + random.randint(-3, 3) for i in range(20)] + [20 + random.randint(-3, 3) for i in range(20)]\
 #         + [200 + random.randint(-3, 3) for i in range(80)] +\
 #         [50 + random.randint(-3, 3) for i in range(80)]  # Blackout example
@@ -97,6 +98,7 @@ fig, ax = plt.subplots(2, 1, figsize=(12, 8), sharex=True)
 
 # Plot 1: Electricity Prices + Running Periods
 ax[0].plot(prices, label="Electricity Price ($)", color="blue", linestyle="dashed", alpha=0.7)
+ax[0].plot([prod_per_day for _ in range(N)], label="Daily revenue ($)", color="orange", alpha=0.7)
 ax[0].fill_between(range(N), prices, where=binary_solution == 1, color="green", alpha=0.3, label="Plant Running")
 ax[0].set_ylabel("Price ($)")
 ax[0].set_title("Electricity Prices Over Time (Shaded = Running Periods)")

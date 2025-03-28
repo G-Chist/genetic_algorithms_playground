@@ -51,7 +51,7 @@ def binary_mutation(offspring, ga_instance):
 # ======================== GA PARAMETERS ========================
 num_generations = 1000
 num_parents_mating = 16
-sol_per_pop = 100
+sol_per_pop = 20
 num_genes = N
 
 # Strictly binary initial population

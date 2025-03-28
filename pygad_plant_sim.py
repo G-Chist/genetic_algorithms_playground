@@ -12,7 +12,7 @@ prod_per_day = 100  # Revenue from a running day (smallest possible time frame)
 # List of electricity prices (randomized for testing)
 random.seed(42)
 # Fuzzy sine wave
-prices = [100 + random.uniform(38, 42)*math.sin((i/60)*random.uniform(1, 2)) + random.randint(-5, 5) for i in range(N)]
+prices = [100 + random.uniform(30, 50)*math.sin((i/80)*random.uniform(0.6, 1.2)) + random.randint(-5, 5) for i in range(N)]
 # prices = [0 + random.randint(-3, 3) for i in range(20)] + [20 + random.randint(-3, 3) for i in range(20)]\
 #         + [200 + random.randint(-3, 3) for i in range(80)] +\
 #         [50 + random.randint(-3, 3) for i in range(80)]  # Blackout example

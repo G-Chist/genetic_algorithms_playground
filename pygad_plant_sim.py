@@ -10,7 +10,7 @@ restart_cost = 400  # Cost to restart the plant after it being shut down
 prod_per_day = 100  # Revenue from a running day (smallest possible time frame)
 
 # List of electricity prices (randomized for testing)
-random.seed(42)
+random.seed(69)
 # Fuzzy sine wave
 prices = [100 + random.uniform(30, 50)*math.sin((i/80)*random.uniform(0.6, 1.2)) + random.randint(-5, 5) for i in range(N)]
 # prices = [0 + random.randint(-3, 3) for i in range(20)] + [20 + random.randint(-3, 3) for i in range(20)]\

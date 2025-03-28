@@ -3,6 +3,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import os
 
 # ======================== PROBLEM PARAMETERS ========================
 N = 800  # Number of available items (days)
@@ -119,3 +120,12 @@ ax[1].grid()
 
 plt.tight_layout()
 plt.show()
+
+# Create directory if it doesn't exist
+output_dir = "plant_sim"
+os.makedirs(output_dir, exist_ok=True)
+
+# Save the figure
+output_path = os.path.join(output_dir, "plant_simulation.png")
+fig.savefig(output_path, dpi=300)
+print(f"Plot saved to {output_path}")

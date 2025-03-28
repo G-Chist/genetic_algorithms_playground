@@ -3,7 +3,7 @@ import math  # For mathematical operations
 import numpy as np  # For numerical operations (arrays, range generation)
 import matplotlib.pyplot as plt  # For plotting graphs
 import matplotlib.animation as animation  # For creating animated visualizations
-
+import os
 
 # Define the polynomial function (cubic equation)
 def polynomial(a, b, c, d, x):
@@ -209,8 +209,11 @@ def animate_polynomial_approximation(function_to_approximate, population_size=50
     # Create animation
     ani = animation.FuncAnimation(fig, update, frames=len(evolution), interval=50, repeat=False)
 
+    # Create directory if it doesn't exist
+    output_dir = "polynomial_approximation"
+    os.makedirs(output_dir, exist_ok=True)
     # Save the animation as a GIF (optional)
-    ani.save(f'polynomial_approximation_{function_to_approximate.__name__}.gif', writer='imagemagick', fps=30)
+    ani.save(f'polynomial_approximation/polynomial_approximation_{function_to_approximate.__name__}.gif', writer='imagemagick', fps=30)
 
     # Show the animation
     plt.show()

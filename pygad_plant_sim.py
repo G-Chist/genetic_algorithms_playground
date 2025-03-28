@@ -7,11 +7,11 @@ import os
 
 # ======================== PROBLEM PARAMETERS ========================
 N = 800  # Number of available items (days)
-restart_cost = 400  # Cost to restart the plant after it being shut down
+restart_cost = 500  # Cost to restart the plant after it being shut down
 prod_per_day = 100  # Revenue from a running day (smallest possible time frame)
 
 # List of electricity prices (randomized for testing)
-random.seed(69)
+random.seed(1)
 # Fuzzy sine wave
 prices = [100 + random.uniform(30, 50)*math.sin((i/80)*random.uniform(0.6, 1.2)) + random.randint(-5, 5) for i in range(N)]
 # prices = [0 + random.randint(-3, 3) for i in range(20)] + [20 + random.randint(-3, 3) for i in range(20)]\
@@ -77,6 +77,22 @@ ga_instance = pygad.GA(
 
 # ======================== RUN GA ========================
 ga_instance.run()  # Start the genetic algorithm
+
+# ======================== SECONDARY TRAINING WITH STEADY-STATE SELECTION ========================
+solution, solution_fitness, solution_idx = ga_instance.best_solution()
+
+ga_instance = pygad.GA(
+    num_generations=num_generations//4,
+    num_parents_mating=num_parents_mating,
+    fitness_func=lambda ga, sol, idx: fitness_func(ga, sol, idx),  # Fitness function only returns revenue
+    sol_per_pop=sol_per_pop,
+    num_genes=num_genes,
+    parent_selection_type="sss",  # Steady-State Selection
+    keep_parents=4,
+    crossover_type="two_points",
+    mutation_type=binary_mutation,  # Use custom mutation
+    initial_population=[solution for _ in range(sol_per_pop)]
+)
 
 # ======================== OUTPUT RESULTS ========================
 solution, solution_fitness, solution_idx = ga_instance.best_solution()

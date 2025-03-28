@@ -12,6 +12,9 @@ prod_per_day = 100  # Revenue from a running day (smallest possible time frame)
 # List of electricity prices (randomized for testing)
 random.seed(42)
 prices = [120 + 80*math.sin(i/10) + random.randint(-30, 30) for i in range(N)]  # Fuzzy sine wave
+# prices = [0 + random.randint(-3, 3) for i in range(20)] + [20 + random.randint(-3, 3) for i in range(20)]\
+#         + [200 + random.randint(-3, 3) for i in range(80)] +\
+#         [50 + random.randint(-3, 3) for i in range(80)]  # Blackout example
 
 
 # ======================== FITNESS FUNCTION ========================
@@ -42,7 +45,7 @@ def fitness_func(ga_instance, solution, solution_idx, return_revenue_curve=False
 # ======================== CUSTOM MUTATION FUNCTION ========================
 def binary_mutation(offspring, ga_instance):
     """Bit-flip mutation (flips bits in each offspring)."""
-    mutation_indices = np.random.choice(len(offspring), size=int(len(offspring) * 0.6), replace=False)
+    mutation_indices = np.random.choice(len(offspring), size=int(len(offspring) * 0.2), replace=False)
     for i in mutation_indices:
         offspring[i] = 1 - offspring[i]  # Flip bit (0 ↔ 1)
     return offspring
@@ -64,7 +67,7 @@ ga_instance = pygad.GA(
     sol_per_pop=sol_per_pop,
     num_genes=num_genes,
     parent_selection_type="random",
-    keep_parents=2,
+    keep_parents=4,
     crossover_type="two_points",
     mutation_type=binary_mutation,  # Use custom mutation
     initial_population=initial_population

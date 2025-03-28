@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 import math
 
 # ======================== PROBLEM PARAMETERS ========================
-N = 200  # Number of available items (days)
+N = 800  # Number of available items (days)
 restart_cost = 400  # Cost to restart the plant after it being shut down
 prod_per_day = 100  # Revenue from a running day (smallest possible time frame)
 
 # List of electricity prices (randomized for testing)
 random.seed(42)
-prices = [120 + 80*math.sin(i/10) + random.randint(-30, 30) for i in range(N)]  # Fuzzy sine wave
+prices = [100 + 40*math.sin(i/60) + random.randint(-20, 20) for i in range(N)]  # Fuzzy sine wave
 # prices = [0 + random.randint(-3, 3) for i in range(20)] + [20 + random.randint(-3, 3) for i in range(20)]\
 #         + [200 + random.randint(-3, 3) for i in range(80)] +\
 #         [50 + random.randint(-3, 3) for i in range(80)]  # Blackout example

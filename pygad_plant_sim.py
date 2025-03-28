@@ -6,7 +6,7 @@ import math
 
 # ======================== PROBLEM PARAMETERS ========================
 N = 200  # Number of available items (days)
-restart_cost = 300  # Cost to restart the plant after it being shut down
+restart_cost = 400  # Cost to restart the plant after it being shut down
 prod_per_day = 100  # Revenue from a running day (smallest possible time frame)
 
 # List of electricity prices (randomized for testing)

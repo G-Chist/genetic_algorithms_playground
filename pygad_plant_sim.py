@@ -79,7 +79,7 @@ ga_instance.run()  # Start the genetic algorithm
 solution, solution_fitness, solution_idx = ga_instance.best_solution()
 
 ga_instance = pygad.GA(
-    num_generations=num_generations//4,
+    num_generations=num_generations//2,
     num_parents_mating=num_parents_mating,
     fitness_func=lambda ga, sol, idx: fitness_func(ga, sol, idx),  # Fitness function only returns revenue
     sol_per_pop=sol_per_pop,

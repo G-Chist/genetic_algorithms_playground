@@ -6,7 +6,7 @@ import numpy as np  # Numpy for numerical operations
 # === Initialize Pygame ===
 pygame.init()  # Initialize Pygame
 width, height = 800, 600  # Define screen dimensions
-screen = pygame.display.set_mode((width, height))  # Create Pygame window
+# screen = pygame.display.set_mode((width, height))  # Create Pygame window
 clock = pygame.time.Clock()  # Create a clock for frame rate control
 
 # === Initialize Pymunk Space ===
@@ -64,7 +64,7 @@ ball_shape.elasticity = 1  # Set the bounciness of the ball
 space.add(ball_body, ball_shape)
 
 # === Pygame Loop ===
-draw_options = pymunk.pygame_util.DrawOptions(screen)  # Enable Pymunk drawing
+# draw_options = pymunk.pygame_util.DrawOptions(screen)  # Enable Pymunk drawing
 
 running = True  # Flag to keep the game running
 while running:
@@ -73,17 +73,17 @@ while running:
         if event.type == pygame.QUIT:
             running = False  # Exit the loop if the user closes the window
 
-    screen.fill((255, 255, 255))  # Clear the screen (white background)
+    # screen.fill((255, 255, 255))  # Clear the screen (white background)
 
-    space.step(1 / 20.0)  # Advance physics simulation (fixed time step)
+    space.step(1 / 60.0)  # Advance physics simulation (fixed time step)
 
-    space.debug_draw(draw_options)  # Draw the Pymunk objects onto the screen
+    # space.debug_draw(draw_options)  # Draw the Pymunk objects onto the screen
 
     # Print ball coordinates
     print(f"Ball Position: x={ball_body.position.x:.2f}, y={height - ball_body.position.y:.2f}")
 
-    pygame.display.flip()  # Update the display
-    clock.tick(60)  # Limit the frame rate to 60 FPS
+    # pygame.display.flip()  # Update the display
+    # clock.tick(60)  # Limit the frame rate to 60 FPS
 
 # === Quit Pygame ===
 pygame.quit()

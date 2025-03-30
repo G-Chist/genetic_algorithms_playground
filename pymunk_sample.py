@@ -69,9 +69,9 @@ space.add(ball_body, ball_shape)
 running = True  # Flag to keep the game running
 while running:
     # Handle events (such as quitting the game)
-    for event in pygame.event.get():
+    """for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False  # Exit the loop if the user closes the window
+            running = False"""  # Exit the loop if the user closes the window
 
     # screen.fill((255, 255, 255))  # Clear the screen (white background)
 

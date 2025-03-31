@@ -4,7 +4,7 @@ import pymunk.pygame_util  # Pymunk utility for drawing
 import numpy as np  # Numpy for numerical operations
 
 # === Initialize Pygame ===
-pygame.init()  # Initialize Pygame
+# pygame.init()  # Initialize Pygame
 width, height = 800, 600  # Define screen dimensions
 # screen = pygame.display.set_mode((width, height))  # Create Pygame window
 # clock = pygame.time.Clock()  # Create a clock for frame rate control
@@ -101,4 +101,4 @@ space.remove(*space.shapes)
 space.remove(*space.constraints)
 
 # === Quit Pygame ===
-pygame.quit()
+# pygame.quit()

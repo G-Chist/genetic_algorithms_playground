@@ -26,7 +26,7 @@ def polynomial_2nd_derivative(x, coefficients):
     return 6*a*x + 2*b
 
 
-# Fitness function evaluates how well the polynomial approximates sin(x)
+# Fitness function evaluates how well the polynomial approximates points
 # We will also enforce smoothness by returning fitness = 0 for large (> too_rough) derivatives
 def fitness_func(ga_instance, solution, solution_idx):
     accumulated_error = 0  # Store accumulated error
@@ -85,12 +85,12 @@ print("Best polynomial coefficients: a = {0}, b = {1}, c = {2}, d = {3}".format(
     solution[0], solution[1], solution[2], solution[3]))  # Print coefficients for the polynomial
 print("Fitness value of the best solution = {0}".format(solution_fitness))  # Print fitness value
 
-# Generate x values for plotting the polynomial and sin(x)
+# Generate x values for plotting the polynomial and points
 x_values = np.linspace(-15, 15, 100)  # Generate values of x
 # Get the predicted polynomial values for these x values using the best solution
 predicted_values = polynomial_function(x_values, solution)
 
-# Plot the actual sin(x) values (target function) and the predicted polynomial values
+# Plot the actual points (target function) and the predicted polynomial values
 fig, ax = plt.subplots()  # Create a figure and axes object
 
 x_points = [point[0] for point in points]

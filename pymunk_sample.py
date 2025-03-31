@@ -70,9 +70,9 @@ running = True  # Flag to keep the game running
 counter = 0
 while counter < 2000:
     # Handle events (such as quitting the game)
-    for event in pygame.event.get():
+    """for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False  # Exit the loop if the user closes the window
+            running = False"""  # Exit the loop if the user closes the window
 
     # screen.fill((255, 255, 255))  # Clear the screen (white background)
 

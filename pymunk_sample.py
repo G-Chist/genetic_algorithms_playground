@@ -66,7 +66,7 @@ space.add(ball_body, ball_shape)
 # === Pygame Loop ===
 # draw_options = pymunk.pygame_util.DrawOptions(screen)  # Enable Pymunk drawing
 
-running = True  # Flag to keep the game running
+positions_y = []  # Array to keep track of all y positions of the ball
 counter = 0
 while counter < 2000:
     # Handle events (such as quitting the game)
@@ -83,12 +83,17 @@ while counter < 2000:
     # Print ball coordinates
     print(f"Ball Position: x={ball_body.position.x:.2f}, y={height - ball_body.position.y:.2f}")
 
+    # Add y position to array if the ball has landed
+    if counter > 100:
+        positions_y.append(height - ball_body.position.y)
+
     counter += 1  # Update step counter
 
     # pygame.display.flip()  # Update the display
     # clock.tick(60)  # Limit the frame rate to 60 FPS
 
-running = False
+max_height = max(positions_y)
+print(f"Max height: {max_height:.2f}")
 
 # Clear existing objects
 space.remove(*space.bodies)

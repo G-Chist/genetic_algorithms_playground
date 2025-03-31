@@ -20,6 +20,8 @@ This repository contains various applications of genetic algorithms (GAs), demon
 ### Power Plant Revenue Optimization
 - Simulates a power plant adjusting its output to maximize revenue given fluctuating electricity prices.
 - The GA optimizes production levels while considering market constraints.
+- This problem is very similar to the knapsack problem!
+  - The solution has the same form, but the fitness function is different.
 
 ## Code Documentation
 

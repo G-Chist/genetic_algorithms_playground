@@ -130,3 +130,5 @@ solution, solution_fitness, solution_idx = ga_instance.best_solution()  # Retrie
 print("Best polynomial coefficients: width={}, height={}".format(solution[0], solution[1]))
 
 simulate_falling_balls(None, solution, solution_idx, True)  # Simulate + draw best solution
+
+# simulate_falling_balls(None, [100, 200], solution_idx, True)  # Simulate + draw some solution (test)

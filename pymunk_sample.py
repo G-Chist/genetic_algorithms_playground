@@ -67,7 +67,8 @@ space.add(ball_body, ball_shape)
 # draw_options = pymunk.pygame_util.DrawOptions(screen)  # Enable Pymunk drawing
 
 running = True  # Flag to keep the game running
-while running:
+counter = 0
+while counter < 2000:
     # Handle events (such as quitting the game)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -82,8 +83,16 @@ while running:
     # Print ball coordinates
     print(f"Ball Position: x={ball_body.position.x:.2f}, y={height - ball_body.position.y:.2f}")
 
+    counter += 1  # Update step counter
+
     # pygame.display.flip()  # Update the display
     # clock.tick(60)  # Limit the frame rate to 60 FPS
+
+
+# Clear existing objects
+space.remove(*space.bodies)
+space.remove(*space.shapes)
+space.remove(*space.constraints)
 
 # === Quit Pygame ===
 pygame.quit()

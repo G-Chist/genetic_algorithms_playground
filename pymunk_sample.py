@@ -3,6 +3,10 @@ import pymunk
 import pymunk.pygame_util
 import pygad  # PyGAD is used for genetic algorithm functionality
 
+# The goal of this genetic algorithm is to find the smallest box three falling bouncy balls can fit in.
+# Any solutions such that the balls fall out of the box are invalid.
+# This program demonstrates how pygad and pymunk, a 2D physics engine, can be used to generate static bodies.
+
 
 def simulate_falling_balls(ga_instance, solution, solution_idx, *draw):
     """Simulates three balls falling into a box and returns the sum of their y-coordinates.
@@ -70,8 +74,8 @@ def simulate_falling_balls(ga_instance, solution, solution_idx, *draw):
     for _ in range(300):  # Simulate for 5 seconds (assuming 60 FPS)
         space.step(1 / 60.0)  # Step physics simulation
 
-        # Sum ball coordinates
-        ball_positions_sum = sum(height-ball.position.y for ball in balls)
+        # Store ball coordinates
+        ball_positions = [height-ball.position.y for ball in balls]
 
         if draw:
             screen.fill((255, 255, 255))  # Clear screen
@@ -81,12 +85,18 @@ def simulate_falling_balls(ga_instance, solution, solution_idx, *draw):
 
     if draw:
         pygame.quit()
+        print(ball_positions)
 
-    return ball_positions_sum  # Return fitness (maximize y positions)
+    fitness = 1 / (box_width*box_height)  # Fitness grows as volume shrinks
+    for pos in ball_positions:
+        if pos < 100:
+            fitness = 0  # Invalidate solution by assigning zero fitness if balls fall out
+
+    return fitness  # Return fitness (minimize volume)
 
 
 # Set parameters for the genetic algorithm
-num_generations = 200  # The number of generations the GA will run
+num_generations = 500  # The number of generations the GA will run
 num_parents_mating = 4  # The number of parents selected for mating
 sol_per_pop = 20  # Number of solutions in each population
 num_genes = 2  # Number of genes (dimensions)

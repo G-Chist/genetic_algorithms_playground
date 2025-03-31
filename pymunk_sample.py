@@ -32,16 +32,14 @@ def simulate_falling_balls(ga_instance, solution, solution_idx, *draw):
     space.gravity = (0, 900)  # Gravity pulling down
 
     # === Create the Box (Static Walls) ===
-    box_x, box_y = 400, 500  # Box position (center)
+    box_x = 400  # Keep the box centered horizontally
+    box_y = (height - 100) - box_height  # Ensure the bottom of the box is always at y = 100
 
     # Define the three walls of the box (bottom, left, right)
     walls = [
-        pymunk.Segment(space.static_body, (box_x - box_width // 2, box_y), (box_x + box_width // 2, box_y), 5),
-        # Bottom
-        pymunk.Segment(space.static_body, (box_x - box_width // 2, box_y), (box_x - box_width // 2, box_y - box_height),
-                       5),  # Left
-        pymunk.Segment(space.static_body, (box_x + box_width // 2, box_y), (box_x + box_width // 2, box_y - box_height),
-                       5),  # Right
+        pymunk.Segment(space.static_body, (box_x - box_width // 2, height-100), (box_x + box_width // 2, height-100), 5),  # Bottom
+        pymunk.Segment(space.static_body, (box_x - box_width // 2, height-100), (box_x - box_width // 2, box_y), 5),  # Left
+        pymunk.Segment(space.static_body, (box_x + box_width // 2, height-100), (box_x + box_width // 2, box_y), 5),  # Right
     ]
 
     for wall in walls:
@@ -127,5 +125,8 @@ ga_instance.run()  # The GA runs for the specified number of generations
 
 # Get the best solution found by the GA after all generations
 solution, solution_fitness, solution_idx = ga_instance.best_solution()  # Retrieve the best solution
+
+# Print best solution
+print("Best polynomial coefficients: width={}, height={}".format(solution[0], solution[1]))
 
 simulate_falling_balls(None, solution, solution_idx, True)  # Simulate + draw best solution

@@ -57,7 +57,7 @@ sol_per_pop = 20
 num_genes = N
 
 # Strictly binary initial population
-initial_population = np.random.choice([1, 1], size=(sol_per_pop, num_genes)).astype(int)  # Initialize all ones
+initial_population = [np.ones(N) for _ in range(sol_per_pop)]  # Initialize all ones
 
 ga_instance = pygad.GA(
     num_generations=num_generations,
@@ -67,7 +67,7 @@ ga_instance = pygad.GA(
     num_genes=num_genes,
     parent_selection_type="random",
     keep_parents=4,
-    crossover_type="two_points",
+    crossover_type="single_point",
     mutation_type=binary_mutation,  # Use custom mutation
     initial_population=initial_population
 )
@@ -86,7 +86,7 @@ ga_instance = pygad.GA(
     num_genes=num_genes,
     parent_selection_type="sss",  # Steady-State Selection
     keep_parents=4,
-    crossover_type="two_points",
+    crossover_type="single_point",
     mutation_type=binary_mutation,  # Use custom mutation
     initial_population=[solution for _ in range(sol_per_pop)]
 )

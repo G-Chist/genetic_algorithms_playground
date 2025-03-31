@@ -1,22 +1,26 @@
+import os
 import pygame
 import pymunk
 import pymunk.pygame_util
-import pygad  # PyGAD is used for genetic algorithm functionality
+import pygad
+from PIL import Image  # For saving animation as a GIF
 
 # The goal of this genetic algorithm is to find the smallest box three falling bouncy balls can fit in.
 # Any solutions such that the balls fall out of the box are invalid.
 # This program demonstrates how pygad and pymunk, a 2D physics engine, can be used to generate static bodies.
 
 
-def simulate_falling_balls(ga_instance, solution, solution_idx, *draw):
+def simulate_falling_balls(ga_instance, solution, solution_idx, *args):
     """Simulates three balls falling into a box and returns the sum of their y-coordinates.
 
     Args:
         solution: box width and height
+    *Args:
         draw (bool): Whether to render the simulation using Pygame.
+        save_animation (bool): Whether to save frames as images for creating an animation.
 
     Returns:
-        float: Sum of the y-coordinates of the three balls at the end of simulation.
+        float: Fitness score for the genetic algorithm.
     """
 
     width, height = 800, 600  # Screen dimensions
@@ -25,11 +29,23 @@ def simulate_falling_balls(ga_instance, solution, solution_idx, *draw):
     box_width = solution[0]
     box_height = solution[1]
 
+    # Extract *args if provided
+    if args:
+        draw = args[0]
+        save_animation = args[1]
+    else:
+        draw = False
+        save_animation = False
+
     # === Initialize Pygame (only if drawing is enabled) ===
-    if draw:
+    if draw or save_animation:
         pygame.init()
         screen = pygame.display.set_mode((width, height))
         clock = pygame.time.Clock()
+
+        # Create folder for saving animation frames
+        if save_animation and not os.path.exists("pymunk_box"):
+            os.makedirs("pymunk_box")
 
     # === Initialize Pymunk Space ===
     space = pymunk.Space()
@@ -41,9 +57,12 @@ def simulate_falling_balls(ga_instance, solution, solution_idx, *draw):
 
     # Define the three walls of the box (bottom, left, right)
     walls = [
-        pymunk.Segment(space.static_body, (box_x - box_width // 2, height-100), (box_x + box_width // 2, height-100), 5),  # Bottom
-        pymunk.Segment(space.static_body, (box_x - box_width // 2, height-100), (box_x - box_width // 2, box_y), 5),  # Left
-        pymunk.Segment(space.static_body, (box_x + box_width // 2, height-100), (box_x + box_width // 2, box_y), 5),  # Right
+        pymunk.Segment(space.static_body, (box_x - box_width // 2, height - 100),
+                       (box_x + box_width // 2, height - 100), 5),  # Bottom
+        pymunk.Segment(space.static_body, (box_x - box_width // 2, height - 100), (box_x - box_width // 2, box_y), 5),
+        # Left
+        pymunk.Segment(space.static_body, (box_x + box_width // 2, height - 100), (box_x + box_width // 2, box_y), 5),
+        # Right
     ]
 
     for wall in walls:
@@ -67,27 +86,49 @@ def simulate_falling_balls(ga_instance, solution, solution_idx, *draw):
         balls.append(ball_body)
 
     # === Pygame Draw Options ===
-    if draw:
+    if draw or save_animation:
         draw_options = pymunk.pygame_util.DrawOptions(screen)
 
     # === Simulation Loop ===
-    for _ in range(300):  # Simulate for 5 seconds (assuming 60 FPS)
+    frames = []  # Store frames for GIF
+    for frame_num in range(300):  # Simulate for 5 seconds (assuming 60 FPS)
         space.step(1 / 60.0)  # Step physics simulation
 
         # Store ball coordinates
-        ball_positions = [height-ball.position.y for ball in balls]
+        ball_positions = [height - ball.position.y for ball in balls]
 
-        if draw:
+        if draw or save_animation:
             screen.fill((255, 255, 255))  # Clear screen
             space.debug_draw(draw_options)  # Draw objects
+
+            if save_animation:
+                filename = f"pymunk_box/frame_{frame_num:03d}.png"
+                pygame.image.save(screen, filename)  # Save each frame
+                frames.append(filename)
+
             pygame.display.flip()
             clock.tick(60)  # Limit to 60 FPS
 
-    if draw:
+    if draw or save_animation:
         pygame.quit()
-        print(ball_positions)
+        print("Ball positions:", ball_positions)
 
-    fitness = 1 / (box_width*box_height)  # Fitness grows as volume shrinks
+    # === Generate GIF if enabled ===
+    if save_animation:
+        print("Saving animation as GIF...")
+        images = [Image.open(f) for f in frames]
+        images[0].save("pymunk_box/simulation.gif", save_all=True, append_images=images[1:], duration=16, loop=0)
+        print("Animation saved as pymunk_box/simulation.gif")
+
+        # Cleanup: Delete individual frame PNGs
+        for frame in frames:
+            try:
+                os.remove(frame)
+            except OSError as e:
+                print(f"Error deleting {frame}: {e}")
+
+    # === Compute Fitness ===
+    fitness = 1 / (box_width * box_height)  # Fitness grows as volume shrinks
     for pos in ball_positions:
         if pos < 100:
             fitness = 0  # Invalidate solution by assigning zero fitness if balls fall out
@@ -139,6 +180,6 @@ solution, solution_fitness, solution_idx = ga_instance.best_solution()  # Retrie
 # Print best solution
 print("Best polynomial coefficients: width={}, height={}".format(solution[0], solution[1]))
 
-simulate_falling_balls(None, solution, solution_idx, True)  # Simulate + draw best solution
+simulate_falling_balls(None, solution, solution_idx, True, True)  # Simulate + draw + save best solution
 
-# simulate_falling_balls(None, [100, 200], solution_idx, True)  # Simulate + draw some solution (test)
+# simulate_falling_balls(None, [100, 200], solution_idx, True, True)  # Simulate + draw + save some solution (test)

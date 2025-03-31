@@ -7,7 +7,7 @@ import numpy as np  # Numpy for numerical operations
 pygame.init()  # Initialize Pygame
 width, height = 800, 600  # Define screen dimensions
 # screen = pygame.display.set_mode((width, height))  # Create Pygame window
-clock = pygame.time.Clock()  # Create a clock for frame rate control
+# clock = pygame.time.Clock()  # Create a clock for frame rate control
 
 # === Initialize Pymunk Space ===
 space = pymunk.Space()  # Create a Pymunk physics simulation space
@@ -88,6 +88,7 @@ while counter < 2000:
     # pygame.display.flip()  # Update the display
     # clock.tick(60)  # Limit the frame rate to 60 FPS
 
+running = False
 
 # Clear existing objects
 space.remove(*space.bodies)

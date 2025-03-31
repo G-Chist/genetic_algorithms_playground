@@ -51,7 +51,7 @@ def binary_mutation(offspring, ga_instance):
 
 
 # ======================== GA PARAMETERS ========================
-num_generations = 1000
+num_generations = 2000
 num_parents_mating = 16
 sol_per_pop = 20
 num_genes = N
@@ -112,7 +112,7 @@ fig, ax = plt.subplots(2, 1, figsize=(12, 8), sharex=True)
 
 # Plot 1: Electricity Prices + Running Periods
 ax[0].plot(prices, label="Electricity Price ($)", color="blue", linestyle="dashed", alpha=0.7)
-ax[0].plot([prod_per_day for _ in range(N)], label="Daily revenue ($)", color="orange", alpha=0.7)
+ax[0].plot([prod_per_day for _ in range(N)], label="Daily revenue (ignoring electricity prices) ($)", color="orange", alpha=0.7)
 ax[0].fill_between(range(N), prices, where=binary_solution == 1, color="green", alpha=0.3, label="Plant Running")
 ax[0].set_ylabel("Price ($)")
 ax[0].set_title("Electricity Prices Over Time (Shaded = Running Periods)")

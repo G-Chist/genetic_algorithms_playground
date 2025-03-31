@@ -180,6 +180,6 @@ solution, solution_fitness, solution_idx = ga_instance.best_solution()  # Retrie
 # Print best solution
 print("Best solution: width={}, height={}".format(solution[0], solution[1]))
 
-simulate_falling_balls(None, solution, solution_idx, True, True)  # Simulate + draw + save best solution
+simulate_falling_balls(None, solution, solution_idx, True, False)  # Simulate + draw best solution
 
 # simulate_falling_balls(None, [100, 200], solution_idx, True, True)  # Simulate + draw + save some solution (test)

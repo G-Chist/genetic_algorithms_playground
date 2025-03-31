@@ -161,7 +161,7 @@ ga_instance = pygad.GA(
     num_parents_mating=num_parents_mating,  # Set number of parents mating
     fitness_func=simulate_falling_balls,  # Assign the fitness function
     sol_per_pop=sol_per_pop,  # Set the number of solutions per population
-    num_genes=num_genes,  # Set the number of genes (polynomial coefficients)
+    num_genes=num_genes,  # Set the number of genes
     init_range_low=init_range_low,  # Set the lower limit for gene initialization
     init_range_high=init_range_high,  # Set the upper limit for gene initialization
     parent_selection_type=parent_selection_type,  # Parent selection method
@@ -178,7 +178,7 @@ ga_instance.run()  # The GA runs for the specified number of generations
 solution, solution_fitness, solution_idx = ga_instance.best_solution()  # Retrieve the best solution
 
 # Print best solution
-print("Best polynomial coefficients: width={}, height={}".format(solution[0], solution[1]))
+print("Best solution: width={}, height={}".format(solution[0], solution[1]))
 
 simulate_falling_balls(None, solution, solution_idx, True, True)  # Simulate + draw + save best solution
 

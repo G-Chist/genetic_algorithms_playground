@@ -102,7 +102,7 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
     if save_animation:
         print("Saving animation as GIF...")
         images = [Image.open(f) for f in frames]
-        images[0].save("pymunk_throw/throw_simulation.gif", save_all=True, append_images=images[1:], duration=16, loop=0)
+        images[0].save("pymunk_throw/throw_simulation.gif", save_all=True, append_images=images[1:], duration=1, loop=0)
         print("Animation saved as pymunk_throw/throw_simulation.gif")
 
         # Cleanup frames
@@ -123,7 +123,7 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
 
 
 # Set parameters for the genetic algorithm
-num_generations = 100  # The number of generations the GA will run
+num_generations = 150  # The number of generations the GA will run
 num_parents_mating = 4  # The number of parents selected for mating
 sol_per_pop = 20  # Number of solutions in each population
 num_genes = 2  # Number of genes

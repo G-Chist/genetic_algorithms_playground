@@ -17,7 +17,7 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
     box_width = 100
 
     # Extract solution
-    angle_degrees = solution[0]
+    angle_degrees = solution[0] // 360
     speed = solution[1]
 
     # Convert angle to radians and compute velocity components
@@ -109,29 +109,30 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
         for frame in frames:
             os.remove(frame)
 
-    # Compute distance from the box for fitness function
-    dist_from_box = math.sqrt(pow((ball_body.position.x - boxX), 2) + pow((ball_body.position.y - boxY), 2))
-    return 1 / (1.0 + dist_from_box)
+    # Compute square of distance from the box for fitness function
+    x_diff = (ball_body.position.x - boxX)
+    y_diff = (ball_body.position.y - boxY)
+    dist_from_box = x_diff*x_diff + y_diff*y_diff
+    return 1 / dist_from_box
 
 
 # Set parameters for the genetic algorithm
-num_generations = 500  # The number of generations the GA will run
+num_generations = 1000  # The number of generations the GA will run
 num_parents_mating = 4  # The number of parents selected for mating
 sol_per_pop = 20  # Number of solutions in each population
 num_genes = 2  # Number of genes
-init_range_low = 10
-init_range_high = 10000
+# Different ranges for each gene
+gene_space = [
+    {"low": 20, "high": 90},  # Gene 1: Angle
+    {"low": 500, "high": 3000}   # Gene 2: Speed
+]
 
 # Set the types of parent selection, crossover, and mutation methods
-parent_selection_type = "sss"  # "sss" stands for Steady State Selection (a parent selection method)
-"""In every generation few chromosomes are selected (good - with high fitness) for creating a new offspring.
-Then some (bad - with low fitness) chromosomes are removed and the new offspring is placed in their place.
-The rest of population survives to new generation.
-"""
+parent_selection_type = "random"
 keep_parents = 2  # Number of parents to keep from one generation to the next
 crossover_type = "single_point"  # Single-point crossover method is used to combine parent solutions
 mutation_type = "random"  # Random mutation method will be used to introduce variation
-mutation_percent_genes = 10  # Percentage of genes that will undergo mutation in each generation
+mutation_percent_genes = 30  # Percentage of genes that will undergo mutation in each generation
 
 # Initialize the genetic algorithm instance with all the parameters
 ga_instance = pygad.GA(
@@ -140,8 +141,7 @@ ga_instance = pygad.GA(
     fitness_func=lambda ga, sol, idx: throw_ball_simulation(ga, sol, idx),  # Assign the fitness function
     sol_per_pop=sol_per_pop,  # Set the number of solutions per population
     num_genes=num_genes,  # Set the number of genes
-    init_range_low=init_range_low,  # Set the lower limit for gene initialization
-    init_range_high=init_range_high,  # Set the upper limit for gene initialization
+    gene_space=gene_space,
     parent_selection_type=parent_selection_type,  # Parent selection method
     keep_parents=keep_parents,  # Number of parents to keep in the next generation
     crossover_type=crossover_type,  # Crossover method
@@ -154,5 +154,8 @@ ga_instance.run()  # The GA runs for the specified number of generations
 
 # Get the best solution found by the GA after all generations
 solution, solution_fitness, solution_idx = ga_instance.best_solution()  # Retrieve the best solution
+print(f"Best solution: ", end="")
+print(solution)
+print(f"Best solution fitness: {solution_fitness}")
 
 throw_ball_simulation(None, solution, solution_idx, draw=True, save_animation=True)  # Simulate + draw best solution

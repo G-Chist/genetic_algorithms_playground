@@ -7,7 +7,7 @@ import math
 from PIL import Image  # For saving animation as a GIF
 
 
-def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, boxX=400, boxY=50, draw=False, save_animation=False):
+def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, boxX=600, boxY=70, draw=False, save_animation=False):
     """
     Simulates a ball being thrown.
     """
@@ -124,7 +124,7 @@ num_genes = 2  # Number of genes
 # Different ranges for each gene
 gene_space = [
     {"low": 20, "high": 90},  # Gene 1: Angle
-    {"low": 500, "high": 3000}   # Gene 2: Speed
+    {"low": 500, "high": 2000}   # Gene 2: Speed
 ]
 
 # Set the types of parent selection, crossover, and mutation methods

@@ -164,4 +164,4 @@ print(f"Best solution: ", end="")
 print(solution)
 print(f"Best solution fitness: {solution_fitness}")
 
-throw_ball_simulation(None, solution, solution_idx, draw=True, save_animation=False)  # Simulate + draw best solution
+throw_ball_simulation(None, solution, solution_idx, draw=True, save_animation=True)  # Simulate + draw best solution

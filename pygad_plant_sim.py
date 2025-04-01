@@ -9,6 +9,8 @@ import os
 N = 2000  # Number of available items (days)
 restart_cost = 500  # Cost to restart the plant after it being shut down
 prod_per_day = 100  # Revenue from a running day (smallest possible time frame)
+switch_constant = 10  # If a solution has frequent switches, we will not prioritize it
+switch_fitness_decrement = 1000  # Decrease a solution's fitness by this if it has frequent switches
 
 # List of electricity prices (randomized for testing)
 random.seed(1)
@@ -23,20 +25,28 @@ def fitness_func(ga_instance, solution, solution_idx, return_revenue_curve=False
     binary_solution = np.round(solution).astype(int)  # Ensure binary representation
 
     revenue = 0
+    fitness = 0
     running = False  # Plant starts off
     revenue_over_time = []  # Track revenue per day
+    last_switch = 0  # Track state switching frequency
 
     for idx in range(N):
         if binary_solution[idx]:  # If the plant is running
             if not running:  # If restarting
                 revenue -= restart_cost
                 running = True
+                if last_switch < switch_constant:  # If the solution switches the state too abruptly, decrease fitness
+                    fitness -= switch_fitness_decrement
             revenue += prod_per_day  # Add revenue
             revenue -= prices[idx]  # Subtract electricity cost
+            last_switch += 1
         else:
             running = False  # The plant is off
+            last_switch = 0
 
         revenue_over_time.append(revenue)  # Store cumulative revenue
+
+    fitness += revenue
 
     return (revenue, revenue_over_time) if return_revenue_curve else revenue
 
@@ -51,9 +61,9 @@ def binary_mutation(offspring, ga_instance):
 
 
 # ======================== GA PARAMETERS ========================
-num_generations = 2000
+num_generations = 500
 num_parents_mating = 16
-sol_per_pop = 20
+sol_per_pop = 50
 num_genes = N
 
 # Strictly binary initial population

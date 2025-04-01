@@ -17,7 +17,7 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
     box_width = 100
 
     # Extract solution
-    angle_degrees = solution[0] // 360
+    angle_degrees = solution[0]
     speed = solution[1]
 
     # Convert angle to radians and compute velocity components
@@ -111,13 +111,19 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
 
     # Compute square of distance from the box for fitness function
     x_diff = (ball_body.position.x - boxX)
-    y_diff = (ball_body.position.y - boxY)
+    y_diff = (ball_body.position.y - boxY + box_height//2)
     dist_from_box = x_diff*x_diff + y_diff*y_diff
+
+    # If ball is in box, return 10000 - speed//10 as fitness to reward lower speed solutions
+    if (boxX - box_width // 2) <= ball_body.position.x <= (boxX + box_width // 2) and (height - boxY - box_height) <= ball_body.position.y <= (height - boxY):
+        # print("Ball successfully landed inside the box!")
+        return 10000 - speed//10
+
     return 1 / dist_from_box
 
 
 # Set parameters for the genetic algorithm
-num_generations = 1000  # The number of generations the GA will run
+num_generations = 100  # The number of generations the GA will run
 num_parents_mating = 4  # The number of parents selected for mating
 sol_per_pop = 20  # Number of solutions in each population
 num_genes = 2  # Number of genes
@@ -158,4 +164,4 @@ print(f"Best solution: ", end="")
 print(solution)
 print(f"Best solution fitness: {solution_fitness}")
 
-throw_ball_simulation(None, solution, solution_idx, draw=True, save_animation=True)  # Simulate + draw best solution
+throw_ball_simulation(None, solution, solution_idx, draw=True, save_animation=False)  # Simulate + draw best solution

@@ -9,11 +9,11 @@ import os
 N = 2000  # Number of available items (days)
 restart_cost = 500  # Cost to restart the plant after it being shut down
 prod_per_day = 100  # Revenue from a running day (smallest possible time frame)
-switch_constant = 10  # If a solution has frequent switches, we will not prioritize it
-switch_fitness_decrement = 1000  # Decrease a solution's fitness by this if it has frequent switches
+shutdown_constant = 20  # Very short period for the plant to stay shut down
+switch_fitness_decrement = 1000  # Decrease a solution's fitness by this if it stays shut down for very short periods
 
 # List of electricity prices (randomized for testing)
-random.seed(1)
+random.seed(69)
 # Fuzzy sine wave
 prices = [100 + random.uniform(30, 50)*math.sin((i/80)*random.uniform(0.6, 1.2)) + random.randint(-5, 5) for i in range(N)]
 
@@ -28,27 +28,27 @@ def fitness_func(ga_instance, solution, solution_idx, return_revenue_curve=False
     fitness = 0
     running = False  # Plant starts off
     revenue_over_time = []  # Track revenue per day
-    last_switch = 0  # Track state switching frequency
+    shutdown_tracker = 0
 
     for idx in range(N):
         if binary_solution[idx]:  # If the plant is running
             if not running:  # If restarting
                 revenue -= restart_cost
                 running = True
-                if last_switch < switch_constant:  # If the solution switches the state too abruptly, decrease fitness
+                if shutdown_tracker < shutdown_constant:  # If the plant was shut down for a really short period
                     fitness -= switch_fitness_decrement
             revenue += prod_per_day  # Add revenue
             revenue -= prices[idx]  # Subtract electricity cost
-            last_switch += 1
+            shutdown_tracker = 0  # Reset number of inactive days
         else:
             running = False  # The plant is off
-            last_switch = 0
+            shutdown_tracker += 1  # Update number of inactive days in a row
 
         revenue_over_time.append(revenue)  # Store cumulative revenue
 
     fitness += revenue
 
-    return (revenue, revenue_over_time) if return_revenue_curve else revenue
+    return (revenue, revenue_over_time) if return_revenue_curve else fitness
 
 
 # ======================== CUSTOM MUTATION FUNCTION ========================

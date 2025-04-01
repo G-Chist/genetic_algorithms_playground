@@ -155,4 +155,4 @@ ga_instance.run()  # The GA runs for the specified number of generations
 # Get the best solution found by the GA after all generations
 solution, solution_fitness, solution_idx = ga_instance.best_solution()  # Retrieve the best solution
 
-throw_ball_simulation(None, solution, solution_idx, True, False)  # Simulate + draw best solution
+throw_ball_simulation(None, solution, solution_idx, draw=True, save_animation=True)  # Simulate + draw best solution

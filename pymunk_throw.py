@@ -7,7 +7,7 @@ import math
 from PIL import Image  # For saving animation as a GIF
 
 
-def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, boxX=400, boxY=200, draw=False, save_animation=False):
+def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, boxX=400, boxY=50, draw=False, save_animation=False):
     """
     Simulates a ball being thrown.
     """

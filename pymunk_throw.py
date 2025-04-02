@@ -4,7 +4,7 @@ import pymunk
 import pymunk.pygame_util
 import pygad
 import math
-from PIL import Image  # For saving animation as a GIF
+from PIL import Image  # For saving animation
 
 
 def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, boxX=600, boxY=70, draw=False, save_animation=False):

@@ -4,10 +4,11 @@ import pymunk
 import pymunk.pygame_util
 import pygad
 import math
+from random import randint, uniform
 from PIL import Image  # For saving animation as a GIF
 
 
-def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, boxX=600, boxY=70, draw=False, save_animation=False):
+def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, boxX=600+uniform(-20, 20), boxY=70+uniform(-20, 20), draw=False, save_animation=False):
     """
     Simulates a ball being thrown.
     """

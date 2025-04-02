@@ -7,6 +7,7 @@ import math
 import numpy as np
 from random import randint, uniform
 from PIL import Image  # For saving animation as a GIF
+from matplotlib import pyplot
 
 
 def sigmoid(x):
@@ -16,7 +17,7 @@ def sigmoid(x):
 
     Returns: 1 / (1 + e^(-x))
     """
-    return 1 / (1 + np.exp(-x))
+    return 1 / (1 + np.exp(-np.clip(x, -500, 500)))  # Clip to prevent overflow
 
 
 def neural_network(boxX, boxY, wm11, wm21, bm1, bm2, wo11, wo12, bo1, bo2):
@@ -34,7 +35,7 @@ def neural_network(boxX, boxY, wm11, wm21, bm1, bm2, wo11, wo12, bo1, bo2):
     return angle, speed
 
 
-def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, boxX=600+uniform(-300, 50), boxY=70+uniform(-20, 400), draw=False, save_animation=False):
+def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, boxX=600+randint(-300, 50), boxY=70+randint(-20, 400), draw=False, save_animation=False):
     """
     Simulates a ball being thrown.
     """
@@ -152,9 +153,9 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
 
 
 # Set parameters for the genetic algorithm
-num_generations = 300  # The number of generations the GA will run
+num_generations = 350  # The number of generations the GA will run
 num_parents_mating = 4  # The number of parents selected for mating
-sol_per_pop = 20  # Number of solutions in each population
+sol_per_pop = 25  # Number of solutions in each population
 num_genes = 8  # Neural network parameters (weights and biases)
 gene_space = [{"low": -1, "high": 1} for _ in range(num_genes)]  # Weight and bias range
 
@@ -189,4 +190,5 @@ print(f"Best solution: ", end="")
 print(solution)
 print(f"Best solution fitness: {solution_fitness}")
 
-throw_ball_simulation(None, solution, solution_idx, draw=True, save_animation=False)  # Simulate + draw best solution
+throw_ball_simulation(None, solution, solution_idx, draw=True)  # Simulate + draw best solution
+throw_ball_simulation(None, solution, solution_idx, boxX=400, boxY=200, draw=True)  # Simulate + draw best solution

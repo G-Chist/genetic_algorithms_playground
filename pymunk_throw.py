@@ -4,11 +4,37 @@ import pymunk
 import pymunk.pygame_util
 import pygad
 import math
+import numpy as np
 from random import randint, uniform
 from PIL import Image  # For saving animation as a GIF
 
 
-def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, boxX=600+uniform(-20, 20), boxY=70+uniform(-20, 20), draw=False, save_animation=False):
+def sigmoid(x):
+    """
+    Args:
+        x: any number
+
+    Returns: 1 / (1 + e^(-x))
+    """
+    return 1 / (1 + np.exp(-x))
+
+
+def neural_network(boxX, boxY, wm11, wm21, bm1, bm2, wo11, wo12, bo1, bo2):
+    """
+    2-input, 2-hidden neuron, 2-output neural network.
+    Inputs: boxX, boxY
+    Outputs: angle, speed
+    """
+    hidden1 = sigmoid(wm11 * boxX + wm21 * boxY + bm1)
+    hidden2 = sigmoid(wm11 * boxX + wm21 * boxY + bm2)
+
+    angle = 20 + sigmoid(wo11 * hidden1 + wo12 * hidden2 + bo1) * 70  # Map to 20-90 degrees
+    speed = 500 + sigmoid(wo11 * hidden1 + wo12 * hidden2 + bo2) * 1500  # Map to 500-2000 units
+
+    return angle, speed
+
+
+def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, boxX=600+uniform(-300, 50), boxY=70+uniform(-20, 400), draw=False, save_animation=False):
     """
     Simulates a ball being thrown.
     """
@@ -17,9 +43,11 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
     box_height = 100
     box_width = 100
 
-    # Extract solution
-    angle_degrees = solution[0]
-    speed = solution[1]
+    # Extract NN weights & biases
+    wm11, wm21, bm1, bm2, wo11, wo12, bo1, bo2 = solution
+
+    # Use NN to get angle and speed
+    angle_degrees, speed = neural_network(boxX, boxY, wm11, wm21, bm1, bm2, wo11, wo12, bo1, bo2)
 
     # Convert angle to radians and compute velocity components
     angle_radians = math.radians(angle_degrees)
@@ -127,12 +155,8 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
 num_generations = 150  # The number of generations the GA will run
 num_parents_mating = 4  # The number of parents selected for mating
 sol_per_pop = 20  # Number of solutions in each population
-num_genes = 2  # Number of genes
-# Different ranges for each gene
-gene_space = [
-    {"low": 20, "high": 90},  # Gene 1: Angle
-    {"low": 500, "high": 2000}   # Gene 2: Speed
-]
+num_genes = 8  # Neural network parameters (weights and biases)
+gene_space = [{"low": -1, "high": 1} for _ in range(num_genes)]  # Weight and bias range
 
 # Set the types of parent selection, crossover, and mutation methods
 parent_selection_type = "random"

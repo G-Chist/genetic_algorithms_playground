@@ -146,13 +146,13 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
     # If ball is in box, return 10000 - speed*k1 - angle*k2 as fitness to reward lower speed, lower angle solutions
     if (boxX - box_width // 2) <= ball_body.position.x <= (boxX + box_width // 2) and (height - boxY - box_height) <= ball_body.position.y <= (height - boxY):
         # print("Ball successfully landed inside the box!")
-        return 10000 - speed*0.1 - angle_degrees*10
+        return 10000 - speed*0.1 - angle_degrees*4
 
     return 1 / dist_from_box
 
 
 # Set parameters for the genetic algorithm
-num_generations = 150  # The number of generations the GA will run
+num_generations = 300  # The number of generations the GA will run
 num_parents_mating = 4  # The number of parents selected for mating
 sol_per_pop = 20  # Number of solutions in each population
 num_genes = 8  # Neural network parameters (weights and biases)

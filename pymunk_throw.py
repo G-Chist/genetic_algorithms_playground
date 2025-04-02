@@ -108,7 +108,7 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
     frames = []
     ball_positions = []
 
-    for frame_num in range(240):  # Run for 4 seconds (assuming 60 FPS)
+    for frame_num in range(360):  # Assuming 60 FPS
         space.step(1 / 60.0)  # Step physics simulation
         ball_positions.append((ball_body.position.x, height - ball_body.position.y))  # Store position
 
@@ -143,10 +143,10 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
     y_diff = (ball_body.position.y - boxY + box_height//2)
     dist_from_box = x_diff*x_diff + y_diff*y_diff
 
-    # If ball is in box, return 10000 - speed*k1 - angle*k2 as fitness to reward lower speed, lower angle solutions
+    # If ball is in box, return 10000 - speed*k1 - angle*k2 as fitness
     if (boxX - box_width // 2) <= ball_body.position.x <= (boxX + box_width // 2) and (height - boxY - box_height) <= ball_body.position.y <= (height - boxY):
         # print("Ball successfully landed inside the box!")
-        return 10000 - speed*0.1 - angle_degrees*4
+        return 10000 + speed*0.1 - angle_degrees*4
 
     return 1 / dist_from_box
 

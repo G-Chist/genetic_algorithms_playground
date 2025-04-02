@@ -17,7 +17,7 @@ def sigmoid(x):
 
     Returns: 1 / (1 + e^(-x))
     """
-    return 1 / (1 + np.exp(-np.clip(x, -500, 500)))  # Clip to prevent overflow
+    return 1 / (1 + np.exp(-np.clip(x, -5000, 5000)))  # Clip to prevent overflow
 
 
 def neural_network(boxX, boxY, wm11, wm21, bm1, bm2, wo11, wo12, bo1, bo2):
@@ -35,7 +35,7 @@ def neural_network(boxX, boxY, wm11, wm21, bm1, bm2, wo11, wo12, bo1, bo2):
     return angle, speed
 
 
-def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, boxX=600+randint(-300, 50), boxY=70+randint(-20, 400), draw=False, save_animation=False):
+def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, random_input=True, draw=False, save_animation=False, *args):
     """
     Simulates a ball being thrown.
     """
@@ -47,8 +47,23 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
     # Extract NN weights & biases
     wm11, wm21, bm1, bm2, wo11, wo12, bo1, bo2 = solution
 
+    # Randomize box positions
+    if random_input:
+        boxX = np.random.uniform(300, 700)
+        boxY = np.random.uniform(50, 400)
+    else:
+        if args:  # Pass position as *args
+            boxX = args[0]
+            boxY = args[1]
+        else:
+            raise ValueError
+
     # Use NN to get angle and speed
     angle_degrees, speed = neural_network(boxX, boxY, wm11, wm21, bm1, bm2, wo11, wo12, bo1, bo2)
+
+    if draw:
+        print(f"Inputs: {boxX}, {boxY}")
+        print(f"Angle: {angle_degrees:.5f}, speed: {speed:.5f}")
 
     # Convert angle to radians and compute velocity components
     angle_radians = math.radians(angle_degrees)
@@ -144,20 +159,20 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
     y_diff = (ball_body.position.y - boxY + box_height//2)
     dist_from_box = x_diff*x_diff + y_diff*y_diff
 
-    # If ball is in box, return 10000 - speed*k1 - angle*k2 as fitness
+    # If ball is in box, return 10000 + speed*k1 + angle*k2 as fitness
     if (boxX - box_width // 2) <= ball_body.position.x <= (boxX + box_width // 2) and (height - boxY - box_height) <= ball_body.position.y <= (height - boxY):
         # print("Ball successfully landed inside the box!")
-        return 10000 + speed*0.1 - angle_degrees*4
+        return 10000 - speed*0.1 + angle_degrees*4
 
     return 1 / dist_from_box
 
 
 # Set parameters for the genetic algorithm
-num_generations = 350  # The number of generations the GA will run
+num_generations = 300  # The number of generations the GA will run
 num_parents_mating = 4  # The number of parents selected for mating
-sol_per_pop = 25  # Number of solutions in each population
+sol_per_pop = 50  # Number of solutions in each population
 num_genes = 8  # Neural network parameters (weights and biases)
-gene_space = [{"low": -1, "high": 1} for _ in range(num_genes)]  # Weight and bias range
+gene_space = [{"low": -0.5, "high": 0.5} for _ in range(num_genes)]  # Weight and bias range
 
 # Set the types of parent selection, crossover, and mutation methods
 parent_selection_type = "random"
@@ -191,4 +206,4 @@ print(solution)
 print(f"Best solution fitness: {solution_fitness}")
 
 throw_ball_simulation(None, solution, solution_idx, draw=True)  # Simulate + draw best solution
-throw_ball_simulation(None, solution, solution_idx, boxX=400, boxY=200, draw=True)  # Simulate + draw best solution
+throw_ball_simulation(None, solution, solution_idx, draw=True)  # Simulate + draw best solution

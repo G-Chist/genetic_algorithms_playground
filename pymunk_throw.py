@@ -79,7 +79,7 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
     frames = []
     ball_positions = []
 
-    for frame_num in range(360):  # Run for 6 seconds (assuming 60 FPS)
+    for frame_num in range(240):  # Run for 4 seconds (assuming 60 FPS)
         space.step(1 / 60.0)  # Step physics simulation
         ball_positions.append((ball_body.position.x, height - ball_body.position.y))  # Store position
 
@@ -164,4 +164,4 @@ print(f"Best solution: ", end="")
 print(solution)
 print(f"Best solution fitness: {solution_fitness}")
 
-throw_ball_simulation(None, solution, solution_idx, draw=True, save_animation=True)  # Simulate + draw best solution
+throw_ball_simulation(None, solution, solution_idx, draw=True, save_animation=False)  # Simulate + draw best solution

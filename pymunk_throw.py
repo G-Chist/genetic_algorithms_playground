@@ -115,10 +115,10 @@ def throw_ball_simulation(ga_instance, solution, solution_idx, x=100, y=500, box
     y_diff = (ball_body.position.y - boxY + box_height//2)
     dist_from_box = x_diff*x_diff + y_diff*y_diff
 
-    # If ball is in box, return 10000 - speed//10 as fitness to reward lower speed solutions
+    # If ball is in box, return 10000 - speed*k1 - angle*k2 as fitness to reward lower speed, lower angle solutions
     if (boxX - box_width // 2) <= ball_body.position.x <= (boxX + box_width // 2) and (height - boxY - box_height) <= ball_body.position.y <= (height - boxY):
         # print("Ball successfully landed inside the box!")
-        return 10000 - speed//10
+        return 10000 - speed*0.1 - angle_degrees*10
 
     return 1 / dist_from_box
 

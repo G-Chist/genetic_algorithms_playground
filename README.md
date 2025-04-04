@@ -9,6 +9,10 @@ This repository contains various applications of genetic algorithms (GAs), demon
 - The genetic algorithm optimizes the box dimensions to be as small as possible while keeping the balls inside.
 - Includes comments explaining physics simulation, fitness evaluation, and genetic operations.
 
+### Basketball Optimization with Pymunk
+- Uses the pymunk physics engine to simulate a ball being thrown at a box
+- Can be tuned for trickshots, high angle shots, etc.
+
 ### Knapsack Problem
 - Implements a GA to solve the 0/1 knapsack problem, maximizing value while staying within a weight limit.
 - Selection, crossover, and mutation are clearly documented.

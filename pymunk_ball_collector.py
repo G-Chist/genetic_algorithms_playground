@@ -37,9 +37,19 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     floor.elasticity = 0
     space.add(floor)
 
-    # === Create Ball ===
+    # Create static components (slope)
+    static_body = space.static_body
+    static_lines = [
+        pymunk.Segment(static_body, (50, height - 280), (200, height - 50), 5),
+    ]
+    for line in static_lines:
+        line.elasticity = 0
+        line.friction = 0.9
+    space.add(*static_lines)
+
+    # === Create Balls ===
     ball_mass, ball_radius = 5, 20
-    ball_positions = [(100, 100)]
+    ball_positions = [(100, height - 500), (100, height - 550), (100, height - 600), (100, height - 650)]
 
     balls = []
     for pos in ball_positions:
@@ -101,4 +111,4 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     return fitness
 
 
-simulate_balls(None, None, None, True, True)  # Example call, draw and save gif
+simulate_balls(None, None, None, True, False)  # Example call, draw and don't save gif

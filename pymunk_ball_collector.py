@@ -45,10 +45,10 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     for line in static_lines:
         line.elasticity = 0
         line.friction = 0.9
-    space.add(*static_lines)
+    space.add(*static_lines)  # all elements of static_lines
 
     # === Create Balls ===
-    ball_mass, ball_radius = 5, 20
+    ball_mass, ball_radius = 5, 25
     ball_x = 50
     ball_positions = [(ball_x, height - 500), (ball_x, height - 550), (ball_x, height - 600), (ball_x, height - 650),
                       (ball_x, height - 700), (ball_x, height - 750), (ball_x, height - 800), (ball_x, height - 850)]
@@ -73,7 +73,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     length = 240
 
     # Define motor angular speed
-    w = 10
+    w = 5
 
     # ----- Create rotating stick -----
     body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
@@ -89,6 +89,20 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     # ----- Add motor -----
     motor = pymunk.SimpleMotor(space.static_body, body, w)
     space.add(motor)
+
+    # Create static components (collector)
+    static_body = space.static_body
+    static_lines_collector = [
+        pymunk.Segment(static_body, (500, height - 70), (700, height - 120), 5),
+        pymunk.Segment(static_body, (700, height - 120), (700, height - 70), 5),
+        pymunk.Segment(static_body, (700, height - 70), (880, height - 70), 5),
+        pymunk.Segment(static_body, (880, height - 70), (880, height - 300), 5),
+        pymunk.Segment(static_body, (880, height - 300), (550, height - 300), 5),
+    ]
+    for line in static_lines_collector:
+        line.elasticity = 0
+        line.friction = 0.9
+    space.add(*static_lines_collector)  # all elements of static_lines_collector
 
     # === Pygame Draw Options ===
     if draw or save_animation:

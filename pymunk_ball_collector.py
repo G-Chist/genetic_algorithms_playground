@@ -180,7 +180,8 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
         if position[0] > 580 and 70 < position[1] < 310:  # x > 580, y between 70 and 310
             fitness += 1000  # 1000 fitness per ball in box
 
-    print(f"Fitness: {fitness}")
+    if draw:
+        print(f"Fitness: {fitness}")
 
     return fitness
 
@@ -197,8 +198,23 @@ num_generations = 500  # The number of generations the GA will run
 num_parents_mating = 4  # The number of parents selected for mating
 sol_per_pop = 20  # Number of solutions in each population
 num_genes = 1 + 1 + 11 * 2  # Number of genes
-init_range_low = 10  # The lower bound for genes
-init_range_high = 1000  # The upper bound for genes
+
+# Different ranges for each gene
+gene_space = [
+    {"low": 20, "high": 256},  # Gene 1: arm length
+    {"low": 2, "high": 20},   # Gene 2: motor speed
+    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},  # Following genes: box coordinates
+    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
+    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
+    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
+    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
+    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
+    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
+    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
+    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
+    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
+    {"low": 500, "high": 800}, {"low": height-70, "high": height-400}
+]
 
 # Set the types of parent selection, crossover, and mutation methods
 parent_selection_type = "sss"  # "sss" stands for Steady State Selection (a parent selection method)
@@ -218,8 +234,7 @@ ga_instance = pygad.GA(
     fitness_func=simulate_balls,  # Assign the fitness function
     sol_per_pop=sol_per_pop,  # Set the number of solutions per population
     num_genes=num_genes,  # Set the number of genes
-    init_range_low=init_range_low,  # Set the lower limit for gene initialization
-    init_range_high=init_range_high,  # Set the upper limit for gene initialization
+    gene_space=gene_space,  # Custom gene limits
     parent_selection_type=parent_selection_type,  # Parent selection method
     keep_parents=keep_parents,  # Number of parents to keep in the next generation
     crossover_type=crossover_type,  # Crossover method
@@ -237,4 +252,4 @@ solution, solution_fitness, solution_idx = ga_instance.best_solution()  # Retrie
 print("Best solution: ")
 print(solution)
 
-simulate_balls(None, solution, solution_idx, True, False)  # Simulate + draw best solution
+simulate_balls(None, solution, solution_idx, True, True)  # Simulate + draw + save best solution

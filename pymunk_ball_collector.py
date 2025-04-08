@@ -202,19 +202,29 @@ num_genes = 1 + 1 + 11 * 2  # Number of genes
 # Different ranges for each gene
 gene_space = [
     {"low": 20, "high": 256},  # Gene 1: arm length
-    {"low": 2, "high": 20},   # Gene 2: motor speed
-    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},  # Following genes: box coordinates
-    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
-    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
-    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
-    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
-    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
-    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
-    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
-    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
-    {"low": 500, "high": 800}, {"low": height-70, "high": height-400},
-    {"low": 500, "high": 800}, {"low": height-70, "high": height-400}
+    {"low": 2, "high": 20},    # Gene 2: motor speed
 ]
+
+# Start from the third gene — the coordinates
+original_coords = [
+    (500, height - 70),
+    (575, height - 125),
+    (640, height - 180),
+    (620, height - 125),
+    (580, height - 70),
+    (735, height - 70),
+    (880, height - 70),
+    (870, height - 185),
+    (880, height - 300),
+    (725, height - 310),
+    (550, height - 300)
+]
+
+# Add coordinate ranges with small variation
+for x, y in original_coords:
+    gene_space.append({"low": x - 20, "high": x + 20})
+    gene_space.append({"low": y - 15, "high": y + 15})
+
 
 # Set the types of parent selection, crossover, and mutation methods
 parent_selection_type = "sss"  # "sss" stands for Steady State Selection (a parent selection method)

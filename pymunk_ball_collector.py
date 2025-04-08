@@ -76,10 +76,10 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     y_rot = height-200
 
     # Define arm parameters
-    length = 250
+    length = 255
 
     # Define motor angular speed
-    w = 5
+    w = 7
 
     # ----- Create rotating stick -----
     body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)

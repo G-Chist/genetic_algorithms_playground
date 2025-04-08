@@ -1,3 +1,4 @@
+import math
 import random
 
 import pygame
@@ -131,6 +132,14 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
         line.friction = 0.9
     space.add(*static_lines_collector)  # all elements of static_lines_collector
 
+    # Compute total distance between consecutive point pairs to evaluate resource cost
+    total_distance = 0
+    for i in range(0, len(points_solution) - 2, 2):  # step by 2, avoid last->first
+        x1, y1 = points_solution[i], points_solution[i + 1]
+        x2, y2 = points_solution[i + 2], points_solution[i + 3]
+        dist = math.hypot(x2 - x1, y2 - y1)
+        total_distance += dist
+
     # === Pygame Draw Options ===
     if draw or save_animation:
         draw_options = pymunk.pygame_util.DrawOptions(screen)
@@ -180,8 +189,16 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
         if position[0] > 580 and 70 < position[1] < 310:  # x > 580, y between 70 and 310
             fitness += 1000  # 1000 fitness per ball in box
 
+    # Less material used for box => better fitness
+    # Less motor power used => better fitness
+    k_w = 0.1
+    k_distance = 0.1
+    fitness -= total_distance * k_distance
+    fitness -= w*k_w
+
     if draw:
         print(f"Fitness: {fitness}")
+        print(f"Total distance: {total_distance}")
 
     return fitness
 

@@ -22,7 +22,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
         save_animation = False
 
     # Extract solution if provided, otherwise use default
-    if solution:
+    if solution is not None:
         arm_solution = solution[0]
         w_solution = solution[1]
         points_solution = solution[2:]
@@ -137,7 +137,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
 
     # === Simulation Loop ===
     frames = []  # Store frames for GIF
-    for frame_num in range(900):  # (assuming 60 FPS)
+    for frame_num in range(600):  # (assuming 60 FPS)
         space.step(1 / 60.0)  # Step physics simulation
 
         # Store ball coordinates
@@ -190,4 +190,51 @@ simulate_balls(None, None, None, True, False)  # Example call, draw and don't sa
 # GENES:
 # motor speed
 # arm length
-# box joint coordinates
+# box joint coordinates (11 x 2)
+
+# Set parameters for the genetic algorithm
+num_generations = 500  # The number of generations the GA will run
+num_parents_mating = 4  # The number of parents selected for mating
+sol_per_pop = 20  # Number of solutions in each population
+num_genes = 1 + 1 + 11 * 2  # Number of genes
+init_range_low = 10  # The lower bound for genes
+init_range_high = 1000  # The upper bound for genes
+
+# Set the types of parent selection, crossover, and mutation methods
+parent_selection_type = "sss"  # "sss" stands for Steady State Selection (a parent selection method)
+"""In every generation few chromosomes are selected (good - with high fitness) for creating a new offspring.
+Then some (bad - with low fitness) chromosomes are removed and the new offspring is placed in their place.
+The rest of population survives to new generation.
+"""
+keep_parents = 2  # Number of parents to keep from one generation to the next
+crossover_type = "single_point"  # Single-point crossover method is used to combine parent solutions
+mutation_type = "random"  # Random mutation method will be used to introduce variation
+mutation_percent_genes = 10  # Percentage of genes that will undergo mutation in each generation
+
+# Initialize the genetic algorithm instance with all the parameters
+ga_instance = pygad.GA(
+    num_generations=num_generations,  # Set number of generations
+    num_parents_mating=num_parents_mating,  # Set number of parents mating
+    fitness_func=simulate_balls,  # Assign the fitness function
+    sol_per_pop=sol_per_pop,  # Set the number of solutions per population
+    num_genes=num_genes,  # Set the number of genes
+    init_range_low=init_range_low,  # Set the lower limit for gene initialization
+    init_range_high=init_range_high,  # Set the upper limit for gene initialization
+    parent_selection_type=parent_selection_type,  # Parent selection method
+    keep_parents=keep_parents,  # Number of parents to keep in the next generation
+    crossover_type=crossover_type,  # Crossover method
+    mutation_type=mutation_type,  # Mutation method
+    mutation_percent_genes=mutation_percent_genes  # Percentage of genes to mutate
+)
+
+# Run the genetic algorithm
+ga_instance.run()  # The GA runs for the specified number of generations
+
+# Get the best solution found by the GA after all generations
+solution, solution_fitness, solution_idx = ga_instance.best_solution()  # Retrieve the best solution
+
+# Print best solution
+print("Best solution: ")
+print(solution)
+
+simulate_balls(None, solution, solution_idx, True, False)  # Simulate + draw best solution

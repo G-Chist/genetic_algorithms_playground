@@ -203,7 +203,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     return fitness
 
 
-simulate_balls(None, None, None, True, False)  # Example call, draw and don't save gif
+# simulate_balls(None, None, None, True, False)  # Example call, draw and don't save gif
 
 # GENES:
 # motor speed
@@ -211,7 +211,7 @@ simulate_balls(None, None, None, True, False)  # Example call, draw and don't sa
 # box joint coordinates (11 x 2)
 
 # Set parameters for the genetic algorithm
-num_generations = 500  # The number of generations the GA will run
+num_generations = 100  # The number of generations the GA will run
 num_parents_mating = 4  # The number of parents selected for mating
 sol_per_pop = 20  # Number of solutions in each population
 num_genes = 1 + 1 + 11 * 2  # Number of genes

@@ -98,13 +98,29 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
 
     # Create static components (collector)
     static_body = space.static_body
+
     static_lines_collector = [
-        pymunk.Segment(static_body, (500, height - 70), (640, height - 180), 5),
-        pymunk.Segment(static_body, (640, height - 180), (580, height - 70), 5),
-        pymunk.Segment(static_body, (580, height - 70), (880, height - 70), 5),
-        pymunk.Segment(static_body, (880, height - 70), (880, height - 300), 5),
-        pymunk.Segment(static_body, (880, height - 300), (550, height - 300), 5),
+        # Sloped line with midpoint
+        pymunk.Segment(static_body, (500, height - 70), (570, height - 125), 5),
+        pymunk.Segment(static_body, (570, height - 125), (640, height - 180), 5),
+
+        # Downward slope back up with midpoint
+        pymunk.Segment(static_body, (640, height - 180), (610, height - 125), 5),
+        pymunk.Segment(static_body, (610, height - 125), (580, height - 70), 5),
+
+        # Flat section split into two
+        pymunk.Segment(static_body, (580, height - 70), (730, height - 70), 5),
+        pymunk.Segment(static_body, (730, height - 70), (880, height - 70), 5),
+
+        # Vertical section split
+        pymunk.Segment(static_body, (880, height - 70), (880, height - 185), 5),
+        pymunk.Segment(static_body, (880, height - 185), (880, height - 300), 5),
+
+        # Top segment with midpoint
+        pymunk.Segment(static_body, (880, height - 300), (715, height - 300), 5),
+        pymunk.Segment(static_body, (715, height - 300), (550, height - 300), 5),
     ]
+
     for line in static_lines_collector:
         line.elasticity = 0
         line.friction = 0.9

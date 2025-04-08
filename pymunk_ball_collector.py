@@ -136,7 +136,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
         space.step(1 / 60.0)  # Step physics simulation
 
         # Store ball coordinates
-        ball_positions = [height - ball.position.y for ball in balls]
+        ball_positions = [(ball.position.x, height - ball.position.y) for ball in balls]
 
         if draw or save_animation:
             screen.fill((255, 255, 255))  # Clear screen
@@ -175,3 +175,8 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
 
 
 simulate_balls(None, None, None, True, False)  # Example call, draw and don't save gif
+
+# GENES:
+# motor speed
+# arm length
+# box joint coordinates

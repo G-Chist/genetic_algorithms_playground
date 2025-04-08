@@ -35,7 +35,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     space.gravity = (0, 900)  # Gravity pulling down
 
     # Create ground
-    floor = pymunk.Segment(space.static_body, (0, height - 50), (width, height - 50), 5)
+    floor = pymunk.Segment(space.static_body, (-100, height - 50), (width, height - 50), 5)
     floor.elasticity = 0
     space.add(floor)
 

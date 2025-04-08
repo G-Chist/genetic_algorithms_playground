@@ -1,3 +1,5 @@
+import random
+
 import pygame
 import pymunk
 import pymunk.pygame_util
@@ -50,17 +52,20 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     # === Create Balls ===
     ball_mass, ball_radius = 5, 25
     ball_x = 50
-    # 8 balls in total
+    # 12 balls in total
     ball_positions = [(ball_x, height - 500), (ball_x, height - 550), (ball_x, height - 600), (ball_x, height - 650),
-                      (ball_x, height - 700), (ball_x, height - 750), (ball_x, height - 800), (ball_x, height - 850)]
+                      (ball_x, height - 700), (ball_x, height - 750), (ball_x, height - 800), (ball_x, height - 850),
+                      (ball_x, height - 900), (ball_x, height - 950), (ball_x, height - 1000), (ball_x, height - 1050)]
 
     balls = []
     for pos in ball_positions:
-        moment = pymunk.moment_for_circle(ball_mass, 0, ball_radius)
+        # Define random increment for radius
+        random_increment = random.randint(-5, 5)
+        moment = pymunk.moment_for_circle(ball_mass, 0, ball_radius + random_increment)
         ball_body = pymunk.Body(ball_mass, moment)
         ball_body.position = pos
 
-        ball_shape = pymunk.Circle(ball_body, ball_radius)
+        ball_shape = pymunk.Circle(ball_body, ball_radius + random_increment)
         ball_shape.elasticity = 0.5  # Bouncy
 
         space.add(ball_body, ball_shape)
@@ -71,7 +76,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     y_rot = height-200
 
     # Define arm parameters
-    length = 240
+    length = 250
 
     # Define motor angular speed
     w = 5
@@ -111,7 +116,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
 
     # === Simulation Loop ===
     frames = []  # Store frames for GIF
-    for frame_num in range(600):  # (assuming 60 FPS)
+    for frame_num in range(900):  # (assuming 60 FPS)
         space.step(1 / 60.0)  # Step physics simulation
 
         # Store ball coordinates

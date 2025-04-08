@@ -8,7 +8,7 @@ from PIL import Image  # For saving animation as a GIF
 
 def simulate_balls(ga_instance, solution, solution_idx, *args):
 
-    width, height = 800, 600  # Screen dimensions
+    width, height = 900, 600  # Screen dimensions
 
     # Extract *args if provided
     if args:
@@ -40,7 +40,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     # Create static components (slope)
     static_body = space.static_body
     static_lines = [
-        pymunk.Segment(static_body, (50, height - 280), (200, height - 50), 5),
+        pymunk.Segment(static_body, (0, height - 160), (200, height - 50), 5),
     ]
     for line in static_lines:
         line.elasticity = 0
@@ -49,7 +49,9 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
 
     # === Create Balls ===
     ball_mass, ball_radius = 5, 20
-    ball_positions = [(100, height - 500), (100, height - 550), (100, height - 600), (100, height - 650)]
+    ball_x = 50
+    ball_positions = [(ball_x, height - 500), (ball_x, height - 550), (ball_x, height - 600), (ball_x, height - 650),
+                      (ball_x, height - 700), (ball_x, height - 750), (ball_x, height - 800), (ball_x, height - 850)]
 
     balls = []
     for pos in ball_positions:
@@ -62,6 +64,31 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
 
         space.add(ball_body, ball_shape)
         balls.append(ball_body)
+
+    # Define motor position
+    x_rot = 600
+    y_rot = height-200
+
+    # Define arm parameter
+    length = 50
+
+    # Define motor angular speed
+    w = 10
+
+    # ----- Create rotating stick -----
+    body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
+    body.position = x_rot, y_rot
+    shape = pymunk.Segment(body, (0, 0), (length, 0), 5)  # stick extends right
+    shape.density = 1
+    space.add(body, shape)
+
+    # ----- Pin to center -----
+    pivot = pymunk.PivotJoint(space.static_body, body, (x_rot, y_rot))
+    space.add(pivot)
+
+    # ----- Add motor -----
+    motor = pymunk.SimpleMotor(space.static_body, body, w)
+    space.add(motor)
 
     # === Pygame Draw Options ===
     if draw or save_animation:

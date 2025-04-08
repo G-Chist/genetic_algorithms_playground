@@ -50,6 +50,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     # === Create Balls ===
     ball_mass, ball_radius = 5, 25
     ball_x = 50
+    # 8 balls in total
     ball_positions = [(ball_x, height - 500), (ball_x, height - 550), (ball_x, height - 600), (ball_x, height - 650),
                       (ball_x, height - 700), (ball_x, height - 750), (ball_x, height - 800), (ball_x, height - 850)]
 
@@ -93,8 +94,8 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     # Create static components (collector)
     static_body = space.static_body
     static_lines_collector = [
-        pymunk.Segment(static_body, (500, height - 70), (580, height - 180), 5),
-        pymunk.Segment(static_body, (580, height - 180), (580, height - 70), 5),
+        pymunk.Segment(static_body, (500, height - 70), (640, height - 180), 5),
+        pymunk.Segment(static_body, (640, height - 180), (580, height - 70), 5),
         pymunk.Segment(static_body, (580, height - 70), (880, height - 70), 5),
         pymunk.Segment(static_body, (880, height - 70), (880, height - 300), 5),
         pymunk.Segment(static_body, (880, height - 300), (550, height - 300), 5),

@@ -60,17 +60,17 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
         ball_body.position = pos
 
         ball_shape = pymunk.Circle(ball_body, ball_radius)
-        ball_shape.elasticity = 1  # Bouncy
+        ball_shape.elasticity = 0.5  # Bouncy
 
         space.add(ball_body, ball_shape)
         balls.append(ball_body)
 
     # Define motor position
-    x_rot = 600
+    x_rot = 400
     y_rot = height-200
 
-    # Define arm parameter
-    length = 50
+    # Define arm parameters
+    length = 240
 
     # Define motor angular speed
     w = 10
@@ -78,7 +78,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     # ----- Create rotating stick -----
     body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
     body.position = x_rot, y_rot
-    shape = pymunk.Segment(body, (0, 0), (length, 0), 5)  # stick extends right
+    shape = pymunk.Segment(body, (-length/2, 0), (length/2, 0), 5)  # Centered on the joint
     shape.density = 1
     space.add(body, shape)
 
@@ -96,7 +96,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
 
     # === Simulation Loop ===
     frames = []  # Store frames for GIF
-    for frame_num in range(300):  # (assuming 60 FPS)
+    for frame_num in range(600):  # (assuming 60 FPS)
         space.step(1 / 60.0)  # Step physics simulation
 
         # Store ball coordinates

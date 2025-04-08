@@ -171,6 +171,12 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     # === Compute Fitness ===
     fitness = 0
 
+    for position in ball_positions:
+        if position[0] > 580 and 70 < position[1] < 310:  # x > 580, y between 70 and 310
+            fitness += 1000  # 1000 fitness per ball in box
+
+    print(f"Fitness: {fitness}")
+
     return fitness
 
 

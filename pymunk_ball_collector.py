@@ -89,7 +89,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
         ball_body.position = pos
 
         ball_shape = pymunk.Circle(ball_body, ball_radius + random_increment)
-        ball_shape.elasticity = 0.5  # Bouncy
+        ball_shape.elasticity = 0.3  # A little bouncy
 
         space.add(ball_body, ball_shape)
         balls.append(ball_body)
@@ -146,7 +146,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
 
     # === Simulation Loop ===
     frames = []  # Store frames for GIF
-    for frame_num in range(600):  # (assuming 60 FPS)
+    for frame_num in range(400):  # (assuming 60 FPS)
         space.step(1 / 60.0)  # Step physics simulation
 
         # Store ball coordinates
@@ -211,7 +211,7 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
 # box joint coordinates (11 x 2)
 
 # Set parameters for the genetic algorithm
-num_generations = 100  # The number of generations the GA will run
+num_generations = 150  # The number of generations the GA will run
 num_parents_mating = 4  # The number of parents selected for mating
 sol_per_pop = 20  # Number of solutions in each population
 num_genes = 1 + 1 + 11 * 2  # Number of genes

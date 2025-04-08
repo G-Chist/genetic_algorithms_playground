@@ -8,9 +8,10 @@ import os
 from PIL import Image  # For saving animation as a GIF
 
 
-def simulate_balls(ga_instance, solution, solution_idx, *args):
+width, height = 900, 600  # Screen dimensions
 
-    width, height = 900, 600  # Screen dimensions
+
+def simulate_balls(ga_instance, solution, solution_idx, *args):
 
     # Extract *args if provided
     if args:
@@ -19,6 +20,26 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     else:
         draw = False
         save_animation = False
+
+    # Extract solution if provided, otherwise use default
+    if solution:
+        arm_solution = solution[0]
+        w_solution = solution[1]
+        points_solution = solution[2:]
+    else:
+        arm_solution = 250
+        w_solution = 7
+        points_solution = [500, height - 70,
+                           575, height - 125,
+                           640, height - 180,
+                           620, height - 125,
+                           580, height - 70,
+                           735, height - 70,
+                           880, height - 70,
+                           870, height - 185,
+                           880, height - 300,
+                           725, height - 310,
+                           550, height - 300]
 
     # === Initialize Pygame (only if drawing is enabled) ===
     if draw or save_animation:
@@ -60,7 +81,8 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     balls = []
     for pos in ball_positions:
         # Define random increment for radius
-        random_increment = random.randint(-5, 5)
+        # random_increment = random.randint(-5, 5)
+        random_increment = 0
         moment = pymunk.moment_for_circle(ball_mass, 0, ball_radius + random_increment)
         ball_body = pymunk.Body(ball_mass, moment)
         ball_body.position = pos
@@ -76,10 +98,10 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     y_rot = height-200
 
     # Define arm parameters
-    length = 255
+    length = arm_solution
 
     # Define motor angular speed
-    w = 7
+    w = w_solution
 
     # ----- Create rotating stick -----
     body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
@@ -100,25 +122,8 @@ def simulate_balls(ga_instance, solution, solution_idx, *args):
     static_body = space.static_body
 
     static_lines_collector = [
-        # Sloped line with midpoint
-        pymunk.Segment(static_body, (500, height - 70), (575, height - 125), 5),
-        pymunk.Segment(static_body, (575, height - 125), (640, height - 180), 5),
-
-        # Downward slope back up with midpoint
-        pymunk.Segment(static_body, (640, height - 180), (620, height - 125), 5),
-        pymunk.Segment(static_body, (620, height - 125), (580, height - 70), 5),
-
-        # Flat section split into two
-        pymunk.Segment(static_body, (580, height - 70), (735, height - 70), 5),
-        pymunk.Segment(static_body, (735, height - 70), (880, height - 70), 5),
-
-        # Vertical section split
-        pymunk.Segment(static_body, (880, height - 70), (870, height - 185), 5),
-        pymunk.Segment(static_body, (870, height - 185), (880, height - 300), 5),
-
-        # Top segment with midpoint
-        pymunk.Segment(static_body, (880, height - 300), (725, height - 310), 5),
-        pymunk.Segment(static_body, (725, height - 310), (550, height - 300), 5),
+        pymunk.Segment(static_body, (points_solution[i], points_solution[i+1]), (points_solution[i+2], points_solution[i+3]), 5)
+        for i in range(0, len(points_solution)-3, 2)
     ]
 
     for line in static_lines_collector:

@@ -60,7 +60,7 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
     body.position = x_rot, y_rot
     shape = pymunk.Segment(body, (length, 0), (-5/2, 0), 5)  # Centered on the joint
-    shape.density = 0.01
+    shape.density = 0.1
     space.add(body, shape)
 
     # ----- Pin to center -----
@@ -68,7 +68,7 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     space.add(pivot)
 
     motor = pymunk.SimpleMotor(space.static_body, body, w)
-    motor.max_force = 50000  # Limit torque so as not to break joints
+    motor.max_force = 15000  # Limit torque so as not to break joints
     space.add(motor)
     direction = 1  # 1 for forward, -1 for reverse
 
@@ -77,7 +77,7 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     rod_body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
     rod_body.position = x_rot + length, y_rot  # attach to crank end
     rod_shape = pymunk.Segment(rod_body, (0, 0), (0, rod_length), 4)
-    rod_shape.density = 0.01
+    rod_shape.density = 0.1
     space.add(rod_body, rod_shape)
 
     # ----- Connect rod to crank end -----
@@ -88,7 +88,7 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     piston_body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
     piston_body.position = x_rot + length, y_rot + rod_length
     piston_shape = pymunk.Poly.create_box(piston_body, size=(100, 20))
-    piston_shape.density = 0.01
+    piston_shape.density = 0.1
     space.add(piston_body, piston_shape)
 
     # ----- Connect rod to piston -----
@@ -116,6 +116,18 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
                                       (piston_width / 2, 0))  # anchor on piston
     space.add(right_groove)
 
+    rod_joint_to_crank.stiffness = 1e6
+    rod_joint_to_crank.damping = 1e4
+
+    rod_joint_to_piston.stiffness = 1e6
+    rod_joint_to_piston.damping = 1e4
+
+    left_groove.stiffness = 1e6
+    left_groove.damping = 1e4
+
+    right_groove.stiffness = 1e6
+    right_groove.damping = 1e4
+
     # === Pygame Draw Options ===
     if draw or save_animation:
         draw_options = pymunk.pygame_util.DrawOptions(screen)
@@ -129,17 +141,17 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
         angle_deg = math.degrees(body.angle)
 
         # Check constraints
-        if angle_deg >= 50 and direction == 1:
+        if angle_deg >= 30 and direction == 1:
             direction = -1
             motor.rate = direction * w
-        elif angle_deg <= 0 and direction == -1:
+        elif angle_deg <= -20 and direction == -1:
             direction = 1
             motor.rate = direction * w
 
         if draw or save_animation:
             screen.fill((255, 255, 255))  # Clear screen
             space.debug_draw(draw_options)  # Draw objects
-            print(f"Motor arm angle: {math.degrees(body.angle):.2f} degrees")
+            # print(f"Motor arm angle: {math.degrees(body.angle):.2f} degrees")
 
             if save_animation:
                 filename = f"pymunk_ball_collector/frame_{frame_num:03d}.png"

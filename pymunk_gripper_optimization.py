@@ -100,14 +100,26 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     rod_joint_to_piston = pymunk.PinJoint(rod_body, piston_body, (0, rod_length), (0, 0))
     space.add(rod_joint_to_piston)
 
-    # ----- Constrain piston to vertical motion using groove joint -----
-    groove = pymunk.GrooveJoint(space.static_body, piston_body,
-                                (x_rot + length, y_rot + 100),  # Top of groove
-                                (x_rot + length, y_rot + 400),  # Bottom of groove
-                                (0, 0))  # Anchor on piston
-    space.add(groove)
+    # Get piston width
+    piston_width = 40
 
+    # Define groove vertical range
+    groove_top_y = y_rot + 100
+    groove_bottom_y = y_rot + 400
 
+    # ----- Left-side groove joint -----
+    left_groove = pymunk.GrooveJoint(space.static_body, piston_body,
+                                     (x_rot + length - piston_width / 2, groove_top_y),
+                                     (x_rot + length - piston_width / 2, groove_bottom_y),
+                                     (-piston_width / 2, 0))  # anchor on piston
+    space.add(left_groove)
+
+    # ----- Right-side groove joint -----
+    right_groove = pymunk.GrooveJoint(space.static_body, piston_body,
+                                      (x_rot + length + piston_width / 2, groove_top_y),
+                                      (x_rot + length + piston_width / 2, groove_bottom_y),
+                                      (piston_width / 2, 0))  # anchor on piston
+    space.add(right_groove)
 
     # === Pygame Draw Options ===
     if draw or save_animation:

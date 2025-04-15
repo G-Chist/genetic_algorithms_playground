@@ -68,14 +68,14 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     space.add(pivot)
 
     # ----- Add limited rotation with a rotary limit joint -----
-    min_angle = -math.pi / 2
-    max_angle = math.pi / 2
+    min_angle = -math.pi / 4
+    max_angle =  math.pi / 4
 
     rotary_limit = pymunk.RotaryLimitJoint(space.static_body, body, min_angle, max_angle)
     space.add(rotary_limit)
 
     motor = pymunk.SimpleMotor(space.static_body, body, w)
-    motor.max_force = 30000  # Limit torque so as not to break joints
+    motor.max_force = 10000  # Limit torque so as not to break joints
     space.add(motor)
 
     # === Create connecting rod ===
@@ -83,7 +83,7 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     rod_body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
     rod_body.position = x_rot + length, y_rot  # attach to crank end
     rod_shape = pymunk.Segment(rod_body, (0, 0), (0, rod_length), 4)
-    rod_shape.density = 0.5
+    rod_shape.density = 0.01
     space.add(rod_body, rod_shape)
 
     # ----- Connect rod to crank end -----
@@ -93,22 +93,34 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     # === Create piston ===
     piston_body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
     piston_body.position = x_rot + length, y_rot + rod_length
-    piston_shape = pymunk.Poly.create_box(piston_body, size=(40, 20))
-    piston_shape.density = 1
+    piston_shape = pymunk.Poly.create_box(piston_body, size=(100, 20))
+    piston_shape.density = 0.01
     space.add(piston_body, piston_shape)
 
     # ----- Connect rod to piston -----
     rod_joint_to_piston = pymunk.PinJoint(rod_body, piston_body, (0, rod_length), (0, 0))
     space.add(rod_joint_to_piston)
 
-    # ----- Constrain piston to vertical motion using groove joint -----
-    groove = pymunk.GrooveJoint(space.static_body, piston_body,
-                                (x_rot + length, y_rot + 100),  # Top of groove
-                                (x_rot + length, y_rot + 400),  # Bottom of groove
-                                (0, 0))  # Anchor on piston
-    space.add(groove)
+    # Get piston width
+    piston_width = 40
 
+    # Define groove vertical range
+    groove_top_y = y_rot + 100
+    groove_bottom_y = y_rot + 400
 
+    # ----- Left-side groove joint -----
+    left_groove = pymunk.GrooveJoint(space.static_body, piston_body,
+                                     (x_rot + length - piston_width / 2, groove_top_y),
+                                     (x_rot + length - piston_width / 2, groove_bottom_y),
+                                     (-piston_width / 2, 0))  # anchor on piston
+    space.add(left_groove)
+
+    # ----- Right-side groove joint -----
+    right_groove = pymunk.GrooveJoint(space.static_body, piston_body,
+                                      (x_rot + length + piston_width / 2, groove_top_y),
+                                      (x_rot + length + piston_width / 2, groove_bottom_y),
+                                      (piston_width / 2, 0))  # anchor on piston
+    space.add(right_groove)
 
     # === Pygame Draw Options ===
     if draw or save_animation:

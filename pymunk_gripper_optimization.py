@@ -67,14 +67,14 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     space.add(pivot)
 
     # ----- Add limited rotation with a rotary limit joint -----
-    min_angle = -math.pi / 2   # -90 degrees
-    max_angle = math.pi / 2    # +90 degrees
+    min_angle = -math.pi / 2
+    max_angle = math.pi / 2
 
     rotary_limit = pymunk.RotaryLimitJoint(space.static_body, body, min_angle, max_angle)
     space.add(rotary_limit)
 
     motor = pymunk.SimpleMotor(space.static_body, body, w)
-    motor.max_force = 50000
+    motor.max_force = 30000  # Limit torque so as not to break joints
     space.add(motor)
 
     # === Create connecting rod ===

@@ -51,7 +51,7 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     y_rot = height - 400
 
     # Define arm parameters
-    length = 200
+    length = 240
 
     # Define motor angular speed
     w = 7
@@ -129,6 +129,21 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     right_groove.stiffness = 1e6
     right_groove.damping = 1e4
 
+    # --- Add a strong vertical spring to support the piston ---
+    anchor_point_on_piston = (0, 0)  # center of the piston
+    anchor_point_in_world = (piston_body.position.x, piston_body.position.y - 200)  # fixed point above
+
+    spring = pymunk.DampedSpring(
+        space.static_body,  # attach to world
+        piston_body,  # attach to piston
+        anchor_point_in_world,  # world point
+        anchor_point_on_piston,  # piston local point
+        rest_length=100,  # desired distance between anchor and piston
+        stiffness=1e1,  # stiff
+        damping=1e3  # good damping to reduce wobble
+    )
+    space.add(spring)
+
     # === Pygame Draw Options ===
     if draw or save_animation:
         draw_options = pymunk.pygame_util.DrawOptions(screen)
@@ -142,11 +157,11 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
         angle_deg = math.degrees(body.angle)
 
         # Check constraints
-        if angle_deg >= 30 and direction == 1:
-            direction = -1
-            motor.rate = direction * w
-        elif angle_deg <= -20 and direction == -1:
+        if angle_deg >= 30 and direction == -1:
             direction = 1
+            motor.rate = direction * w
+        elif angle_deg <= -20 and direction == 1:
+            direction = -1
             motor.rate = direction * w
 
         if draw or save_animation:

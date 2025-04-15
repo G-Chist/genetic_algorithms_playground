@@ -60,7 +60,7 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
     body.position = x_rot, y_rot
     shape = pymunk.Segment(body, (length, 0), (-5/2, 0), 5)  # Centered on the joint
-    shape.density = 1
+    shape.density = 0.01
     space.add(body, shape)
 
     # ----- Pin to center -----

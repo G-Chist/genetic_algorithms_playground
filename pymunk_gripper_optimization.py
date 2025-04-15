@@ -10,6 +10,7 @@ from PIL import Image  # For saving animation as a GIF
 
 width, height = 900, 600  # Screen dimensions
 
+
 def simulate_gripper(ga_instance, solution, solution_idx, *args):
 
     # Extract *args if provided

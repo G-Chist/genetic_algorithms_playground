@@ -116,6 +116,7 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
                                       (piston_width / 2, 0))  # anchor on piston
     space.add(right_groove)
 
+    # ----- Dampen groove joints -----
     rod_joint_to_crank.stiffness = 1e6
     rod_joint_to_crank.damping = 1e4
 
@@ -151,7 +152,7 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
         if draw or save_animation:
             screen.fill((255, 255, 255))  # Clear screen
             space.debug_draw(draw_options)  # Draw objects
-            # print(f"Motor arm angle: {math.degrees(body.angle):.2f} degrees")
+            print(f"Motor arm angle: {math.degrees(body.angle):.2f} degrees")
 
             if save_animation:
                 filename = f"pymunk_ball_collector/frame_{frame_num:03d}.png"

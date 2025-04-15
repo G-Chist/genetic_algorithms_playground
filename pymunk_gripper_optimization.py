@@ -95,7 +95,7 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     space.add(rod_joint_to_piston)
 
     # Get piston width
-    piston_width = 40
+    piston_width = 100
 
     # Define groove vertical range
     groove_top_y = y_rot + 100

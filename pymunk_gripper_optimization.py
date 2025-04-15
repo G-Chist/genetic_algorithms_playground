@@ -70,6 +70,7 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     motor = pymunk.SimpleMotor(space.static_body, body, w)
     motor.max_force = 50000  # Limit torque so as not to break joints
     space.add(motor)
+    direction = 1  # 1 for forward, -1 for reverse
 
     # === Create connecting rod ===
     rod_length = 150
@@ -123,6 +124,17 @@ def simulate_gripper(ga_instance, solution, solution_idx, *args):
     frames = []  # Store frames for GIF
     for frame_num in range(400):  # (assuming 60 FPS)
         space.step(1 / 60.0)  # Step physics simulation
+
+        # Get angle in degrees
+        angle_deg = math.degrees(body.angle)
+
+        # Check constraints
+        if angle_deg >= 50 and direction == 1:
+            direction = -1
+            motor.rate = direction * w
+        elif angle_deg <= 0 and direction == -1:
+            direction = 1
+            motor.rate = direction * w
 
         if draw or save_animation:
             screen.fill((255, 255, 255))  # Clear screen

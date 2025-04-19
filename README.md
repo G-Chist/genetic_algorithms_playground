@@ -6,7 +6,7 @@ This repository contains various applications of genetic algorithms (GAs), demon
 
 <details>
 <summary>
-### Box Optimization with Pymunk
+Box Optimization with Pymunk
 </summary>
 - Uses the pymunk physics engine to simulate falling balls inside a box.
 - The genetic algorithm optimizes the box dimensions to be as small as possible while keeping the balls inside.
